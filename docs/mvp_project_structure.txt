@@ -1,0 +1,98 @@
+pm-ontology-mvp/
+│
+├── backend/                         # Python FastAPI 백엔드
+│   ├── app/
+│   │   ├── main.py                  # FastAPI 앱 진입점, 라우터 등록
+│   │   ├── config.py                # 환경변수 (pydantic-settings)
+│   │   │
+│   │   ├── api/                     # REST 엔드포인트
+│   │   │   ├── webhooks.py          # POST /webhook/github, /webhook/figma, /webhook/slack
+│   │   │   ├── projects.py          # GET/POST /projects, /projects/{id}/wbs
+│   │   │   ├── persons.py           # GET/POST /persons, 역량 조회
+│   │   │   ├── recommendations.py   # POST /projects/{id}/recommend-staff
+│   │   │   ├── alerts.py            # GET /alerts (수신함)
+│   │   │   └── reports.py           # POST /reports/generate
+│   │   │
+│   │   ├── core/                    # 도메인 핵심 로직
+│   │   │   ├── normalizer/          # WorkEvent 정규화 (Layer 1)
+│   │   │   │   ├── github.py        # GitCommitEvent 변환
+│   │   │   │   ├── figma.py         # DesignEvent 변환
+│   │   │   │   └── slack.py         # MessageEvent 변환
+│   │   │   │
+│   │   │   ├── interpreter/         # Semantic Interpreter (Layer 2)
+│   │   │   │   ├── llm_client.py    # Claude API 호출 래퍼
+│   │   │   │   ├── prompts.py       # 시스템 프롬프트 (Signal 분류)
+│   │   │   │   └── classifier.py    # WorkEvent → SemanticUnit 분류
+│   │   │   │
+│   │   │   ├── inference/           # 추론 엔진 (Layer 3)
+│   │   │   │   ├── wbs_rules.py     # ProgressSignal → Task.progress 갱신
+│   │   │   │   ├── issue_rules.py   # IssueSignal → dependsOn BFS 파급
+│   │   │   │   ├── skill_rules.py   # CompetencySignal → Skill EMA 갱신
+│   │   │   │   └── alert_rules.py   # Signal → Alert 생성 규칙
+│   │   │   │
+│   │   │   └── services/            # 서비스 레이어 (Layer 4)
+│   │   │       ├── wbs_service.py   # WBS 조회, 스냅샷 생성
+│   │   │       ├── alert_service.py # Slack/Email 알림 발송
+│   │   │       ├── recommend_service.py  # 인력 추천 점수 계산
+│   │   │       └── report_service.py     # 보고서 초안 생성
+│   │   │
+│   │   ├── db/                      # 데이터 접근 계층
+│   │   │   ├── postgres.py          # SQLAlchemy 세션, 연결
+│   │   │   ├── models.py            # ORM 모델 (Person, Project, Task 등)
+│   │   │   ├── fuseki.py            # Fuseki SPARQL 클라이언트
+│   │   │   └── migrations/          # Alembic 마이그레이션
+│   │   │
+│   │   ├── workers/                 # Celery 비동기 태스크
+│   │   │   ├── celery_app.py        # Celery 앱 설정 (Redis 브로커)
+│   │   │   ├── event_tasks.py       # WorkEvent 처리 태스크
+│   │   │   └── report_tasks.py      # 보고서 생성 태스크 (cron)
+│   │   │
+│   │   └── schemas/                 # Pydantic 스키마 (요청/응답 DTO)
+│   │       ├── events.py
+│   │       ├── tasks.py
+│   │       └── persons.py
+│   │
+│   ├── ontology/
+│   │   └── pm-ontology.ttl          # 온톨로지 스키마 (기존 작성분)
+│   │
+│   ├── tests/
+│   │   ├── test_normalizer.py
+│   │   ├── test_interpreter.py
+│   │   ├── test_inference.py
+│   │   └── test_api.py
+│   │
+│   ├── Dockerfile
+│   ├── pyproject.toml               # 의존성 관리 (uv 또는 poetry)
+│   └── .env.example
+│
+├── frontend/                        # Next.js 프론트엔드
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── page.tsx             # 대시보드 홈 (WBS 전체 현황)
+│   │   │   ├── projects/
+│   │   │   │   ├── [id]/wbs/        # WBS 상세 + 진척 타임라인
+│   │   │   │   └── new/             # 프로젝트 등록 + 초기 매핑
+│   │   │   ├── recommend/           # 인력 추천 결과
+│   │   │   └── alerts/              # 알림 히스토리
+│   │   │
+│   │   ├── components/
+│   │   │   ├── WBSTable.tsx         # 진척률 바 포함 테이블
+│   │   │   ├── RecommendCard.tsx    # 추천 인력 카드
+│   │   │   ├── AlertFeed.tsx        # 실시간 알림 목록
+│   │   │   └── SkillRadar.tsx       # 역량 레이더 차트
+│   │   │
+│   │   └── lib/
+│   │       ├── api.ts               # API 클라이언트
+│   │       └── queries.ts           # React Query 훅 모음
+│   │
+│   ├── Dockerfile
+│   └── package.json
+│
+└── docker-compose.yml               # 전체 스택 한 번에 기동
+    # services:
+    #   - backend   (FastAPI :8000)
+    #   - worker    (Celery)
+    #   - frontend  (Next.js :3000)
+    #   - postgres  (PostgreSQL :5432)
+    #   - fuseki    (Apache Jena Fuseki :3030)
+    #   - redis     (Redis :6379)

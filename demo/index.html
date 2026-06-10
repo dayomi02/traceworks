@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Traceworks 데모</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #181b22;
+      --panel-2: #1f232c;
+      --border: #2a2f3a;
+      --text: #e5e7eb;
+      --muted: #9aa3b2;
+      --accent: #6ea8fe;
+      --ok: #5fd27a;
+      --warn: #f7c96b;
+      --err: #ff8888;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, sans-serif;
+      font-size: 14px; line-height: 1.5;
+    }
+    header {
+      padding: 16px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--panel);
+    }
+    header h1 { margin: 0; font-size: 18px; }
+    header .api-base { color: var(--muted); font-size: 12px; }
+    nav {
+      display: flex; gap: 6px; padding: 8px 24px;
+      border-bottom: 1px solid var(--border); background: var(--panel);
+    }
+    nav button {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text); padding: 6px 12px; border-radius: 6px;
+      cursor: pointer; font-size: 13px;
+    }
+    nav button.active { background: var(--accent); color: #0f1115; border-color: var(--accent); }
+    main { padding: 20px 24px; max-width: 1200px; margin: 0 auto; }
+    section.tab { display: none; }
+    section.tab.active { display: block; }
+    h2 { font-size: 16px; margin-top: 0; }
+    h3 { font-size: 14px; margin: 16px 0 8px; color: var(--muted); }
+    .card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px; margin-bottom: 16px;
+    }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    input[type="text"], input[type="number"], input[type="file"], textarea {
+      background: var(--panel-2); border: 1px solid var(--border);
+      color: var(--text); padding: 6px 10px; border-radius: 6px; font-size: 13px;
+      font-family: inherit;
+    }
+    textarea { width: 100%; min-height: 180px; font-family: ui-monospace, "SF Mono", monospace; }
+    button.btn {
+      background: var(--accent); color: #0f1115; border: none;
+      padding: 7px 14px; border-radius: 6px; cursor: pointer; font-weight: 600;
+      font-size: 13px;
+    }
+    button.btn.secondary { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); }
+    button.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    label { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td {
+      text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    th { color: var(--muted); font-weight: 500; }
+    tr.clickable { cursor: pointer; }
+    tr.clickable:hover { background: var(--panel-2); }
+    pre {
+      background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px;
+      padding: 10px; overflow: auto; font-size: 12px; max-height: 360px;
+      font-family: ui-monospace, "SF Mono", monospace;
+    }
+    .status { padding: 6px 10px; border-radius: 6px; font-size: 12px; display: inline-block; }
+    .status.ok { background: rgba(95,210,122,0.15); color: var(--ok); }
+    .status.warn { background: rgba(247,201,107,0.15); color: var(--warn); }
+    .status.err { background: rgba(255,136,136,0.15); color: var(--err); }
+    .pill {
+      display: inline-block; padding: 2px 8px; border-radius: 10px;
+      font-size: 11px; background: var(--panel-2); border: 1px solid var(--border);
+    }
+    .pill.ok { color: var(--ok); border-color: rgba(95,210,122,0.3); }
+    .pill.warn { color: var(--warn); border-color: rgba(247,201,107,0.3); }
+    .muted { color: var(--muted); font-size: 12px; }
+    .progress-bar {
+      height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; width: 80px;
+    }
+    .progress-bar > div { height: 100%; background: var(--accent); }
+    .log {
+      margin-top: 16px; font-size: 12px; color: var(--muted);
+      border-top: 1px dashed var(--border); padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Traceworks API 데모</h1>
+    <span class="api-base" id="apiBase"></span>
+  </header>
+
+  <nav id="nav">
+    <button data-tab="projects" class="active">프로젝트</button>
+    <button data-tab="rfp">RFP 분석</button>
+    <button data-tab="recommend">인력 추천</button>
+    <button data-tab="availability">가용성</button>
+  </nav>
+
+  <main>
+    <!-- ─────────── 프로젝트 탭 ─────────── -->
+    <section id="tab-projects" class="tab active">
+      <div class="card">
+        <h2>프로젝트 목록</h2>
+        <div class="row">
+          <button class="btn" onclick="loadProjects()">목록 불러오기</button>
+        </div>
+        <table id="projectsTable">
+          <thead><tr>
+            <th>project_id</th><th>name</th><th>domain</th><th>status</th>
+            <th>progress</th><th></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="card" id="wbsCard" style="display:none">
+        <h2>WBS — <span id="wbsProjectId"></span></h2>
+        <table id="wbsTable">
+          <thead><tr>
+            <th>wbs_code</th><th>task</th><th>status</th><th>progress</th>
+            <th>assignee</th><th>due_date</th><th>hours(계획/실적)</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="row" style="margin-top:12px">
+          <button class="btn secondary" onclick="jumpToRecommend(document.getElementById('wbsProjectId').textContent)">
+            이 프로젝트로 인력 추천 →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── RFP 탭 ─────────── -->
+    <section id="tab-rfp" class="tab">
+      <div class="card">
+        <h2>① RFP 업로드</h2>
+        <div class="row">
+          <input type="file" id="rfpFile" accept=".pdf,.docx,.hwp,.hwpx" />
+          <button class="btn" onclick="uploadRfp()">업로드</button>
+        </div>
+        <div class="log" id="uploadLog"></div>
+      </div>
+
+      <div class="card" id="analyzeCard" style="display:none">
+        <h2>② 분석 실행</h2>
+        <div class="row">
+          <span>현재 RFP: <span class="pill" id="currentRfpId">-</span></span>
+          <span id="rfpStatus"></span>
+          <button class="btn" onclick="analyzeRfp()">LLM 분석 실행</button>
+        </div>
+        <div class="log muted">
+          OpenAI API 호출이 포함됩니다 (OPENAI_API_KEY 필요, 수 초 소요).
+        </div>
+      </div>
+
+      <div class="card" id="reviewCard" style="display:none">
+        <h2>③ 분석 결과 확인 · 수정</h2>
+        <div class="row" style="margin-bottom:8px">
+          <span>confidence_score: <span class="pill" id="confScore">-</span></span>
+          <span id="confHint"></span>
+        </div>
+        <h3>project (JSON)</h3>
+        <textarea id="projectJson"></textarea>
+        <h3>wbs (JSON 배열)</h3>
+        <textarea id="wbsJson"></textarea>
+        <h3>required_roles (JSON 배열)</h3>
+        <textarea id="rolesJson"></textarea>
+        <div class="row" style="margin-top:12px">
+          <button class="btn secondary" onclick="savePatch()">수정 저장 (PATCH)</button>
+        </div>
+      </div>
+
+      <div class="card" id="confirmCard" style="display:none">
+        <h2>④ 온톨로지 적재 (선택)</h2>
+        <div class="muted" style="margin-bottom:8px">
+          확정 시 Fuseki에 Project + Task 인스턴스가 영구 적재됩니다.
+          적재하지 않고 분석 결과만 확인할 수도 있습니다.
+        </div>
+        <div class="row">
+          <button class="btn" onclick="confirmRfp()">Fuseki에 적재 (확정)</button>
+        </div>
+        <div class="log" id="confirmLog"></div>
+      </div>
+
+      <div class="card">
+        <h2>RFP 이력</h2>
+        <button class="btn secondary" onclick="loadRfpList()">목록 새로고침</button>
+        <table id="rfpListTable">
+          <thead><tr>
+            <th>rfp_id</th><th>file_name</th><th>project_name</th><th>status</th><th>created_at</th>
+            <th></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ─────────── 인력 추천 탭 ─────────── -->
+    <section id="tab-recommend" class="tab">
+      <div class="card">
+        <h2>인력 추천 실행</h2>
+        <div class="row">
+          <label>project_id
+            <input type="text" id="recProjectId" placeholder="PRJ_XXXX" style="width:180px" />
+          </label>
+          <label>top_k <input type="number" id="recTopK" min="1" max="20" style="width:60px" /></label>
+          <label><input type="checkbox" id="recPersist" /> persist (Fuseki 적재)</label>
+          <button class="btn" onclick="runRecommend()">추천 실행</button>
+        </div>
+        <table id="recTable">
+          <thead><tr>
+            <th>rank</th><th>person</th><th>similarity</th><th>availability</th>
+            <th>matched_skills</th><th>reason</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="log" id="recLog"></div>
+      </div>
+    </section>
+
+    <!-- ─────────── 가용성 탭 ─────────── -->
+    <section id="tab-availability" class="tab">
+      <div class="card">
+        <h2>구성원 가용성 현황</h2>
+        <div class="row">
+          <label>projectId (옵션)
+            <input type="text" id="availProjectId" placeholder="PRJ001 등" style="width:160px" />
+          </label>
+          <button class="btn" onclick="loadAvailability()">조회</button>
+        </div>
+        <table id="availTable">
+          <thead><tr>
+            <th>person_id</th><th>name</th><th>role</th><th>active_tasks</th>
+            <th>availability_score (stored)</th><th>computed_availability</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = window.location.origin;
+    document.getElementById("apiBase").textContent = API_BASE;
+
+    // ── 탭 전환 ────────────────────────────────────────────
+    document.getElementById("nav").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-tab]");
+      if (!btn) return;
+      document.querySelectorAll("#nav button").forEach((b) => b.classList.toggle("active", b === btn));
+      const tab = btn.dataset.tab;
+      document.querySelectorAll("section.tab").forEach((s) => {
+        s.classList.toggle("active", s.id === `tab-${tab}`);
+      });
+    });
+
+    function showTab(tabId) {
+      document.querySelectorAll("#nav button").forEach((b) =>
+        b.classList.toggle("active", b.dataset.tab === tabId)
+      );
+      document.querySelectorAll("section.tab").forEach((s) =>
+        s.classList.toggle("active", s.id === `tab-${tabId}`)
+      );
+    }
+
+    // ── API 헬퍼 ────────────────────────────────────────────
+    async function api(method, path, body = null) {
+      const opts = { method };
+      if (body instanceof FormData) {
+        opts.body = body;
+      } else if (body) {
+        opts.headers = { "Content-Type": "application/json" };
+        opts.body = JSON.stringify(body);
+      }
+      const res = await fetch(API_BASE + path, opts);
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch { data = text; }
+      if (!res.ok) {
+        const msg = typeof data === "string" ? data : JSON.stringify(data);
+        throw new Error(`${res.status} ${res.statusText}: ${msg}`);
+      }
+      return data;
+    }
+
+    function setStatus(elId, text, kind = "ok") {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.innerHTML = `<span class="status ${kind}">${text}</span>`;
+    }
+
+    function errAlert(err) {
+      console.error(err);
+      alert(err.message || String(err));
+    }
+
+    // ── 프로젝트 ────────────────────────────────────────────
+    async function loadProjects() {
+      try {
+        const rows = await api("GET", "/projects");
+        const tbody = document.querySelector("#projectsTable tbody");
+        tbody.innerHTML = "";
+        rows.forEach((p) => {
+          const tr = document.createElement("tr");
+          tr.classList.add("clickable");
+          tr.onclick = () => loadWbs(p.project_id);
+          tr.innerHTML = `
+            <td>${p.project_id}</td>
+            <td>${p.project_name || ""}</td>
+            <td>${p.domain || "-"}</td>
+            <td><span class="pill">${p.status || ""}</span></td>
+            <td>
+              <div class="progress-bar"><div style="width:${p.overall_progress || 0}%"></div></div>
+              <span class="muted">${(p.overall_progress ?? 0).toFixed(1)}%</span>
+            </td>
+            <td><button class="btn secondary" onclick="event.stopPropagation(); loadWbs('${p.project_id}')">WBS</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (e) { errAlert(e); }
+    }
+
+    async function loadWbs(projectId) {
+      try {
+        const rows = await api("GET", `/projects/${projectId}/wbs`);
+        document.getElementById("wbsCard").style.display = "block";
+        document.getElementById("wbsProjectId").textContent = projectId;
+        const tbody = document.querySelector("#wbsTable tbody");
+        tbody.innerHTML = "";
+        rows.forEach((t) => {
+          tbody.insertAdjacentHTML("beforeend", `
+            <tr>
+              <td>${t.wbs_code}</td>
+              <td>${t.task_name}</td>
+              <td><span class="pill">${t.status}</span></td>
+              <td>${t.progress}%</td>
+              <td>${t.assignee || "-"}</td>
+              <td>${t.due_date || "-"}</td>
+              <td>${t.planned_hours ?? "-"} / ${t.actual_hours ?? "-"}</td>
+            </tr>
+          `);
+        });
+      } catch (e) { errAlert(e); }
+    }
+
+    function jumpToRecommend(projectId) {
+      document.getElementById("recProjectId").value = projectId;
+      showTab("recommend");
+    }
+
+    // ── RFP ────────────────────────────────────────────────
+    let currentRfpId = null;
+
+    async function uploadRfp() {
+      const input = document.getElementById("rfpFile");
+      if (!input.files.length) { alert("파일을 선택하세요"); return; }
+      const fd = new FormData();
+      fd.append("file", input.files[0]);
+      try {
+        const res = await api("POST", "/rfp/upload", fd);
+        currentRfpId = res.rfp_id;
+        document.getElementById("currentRfpId").textContent = res.rfp_id;
+        document.getElementById("analyzeCard").style.display = "block";
+        document.getElementById("uploadLog").innerHTML = `
+          <span class="status ok">업로드 완료</span>
+          ${res.file_name} · ${res.page_count} pages · status=${res.status}
+        `;
+        setStatus("rfpStatus", `status: ${res.status}`, "ok");
+      } catch (e) { errAlert(e); }
+    }
+
+    async function analyzeRfp() {
+      if (!currentRfpId) { alert("먼저 업로드하세요"); return; }
+      try {
+        setStatus("rfpStatus", "분석 중…", "warn");
+        const res = await api("POST", `/rfp/${currentRfpId}/analyze`);
+        setStatus("rfpStatus", `status: ${res.status}`, "ok");
+        renderAnalysis(res);
+      } catch (e) { errAlert(e); setStatus("rfpStatus", "분석 실패", "err"); }
+    }
+
+    function renderAnalysis(res) {
+      document.getElementById("reviewCard").style.display = "block";
+      document.getElementById("confirmCard").style.display = "block";
+      document.getElementById("projectJson").value = JSON.stringify(res.project || {}, null, 2);
+      document.getElementById("wbsJson").value = JSON.stringify(res.wbs || [], null, 2);
+      document.getElementById("rolesJson").value = JSON.stringify(res.required_roles || [], null, 2);
+      const score = res.confidence_score ?? 0;
+      document.getElementById("confScore").textContent = score.toFixed(2);
+      const hint = document.getElementById("confHint");
+      if (score < 0.75) {
+        hint.innerHTML = `<span class="status warn">신뢰도 낮음 — 검토 필요</span>`;
+      } else {
+        hint.innerHTML = `<span class="status ok">신뢰도 양호</span>`;
+      }
+    }
+
+    async function savePatch() {
+      if (!currentRfpId) return;
+      try {
+        const body = {
+          project: JSON.parse(document.getElementById("projectJson").value),
+          wbs: JSON.parse(document.getElementById("wbsJson").value),
+          required_roles: JSON.parse(document.getElementById("rolesJson").value),
+        };
+        const res = await api("PATCH", `/rfp/${currentRfpId}/analysis`, body);
+        setStatus("rfpStatus", `status: ${res.status}`, "ok");
+        alert("수정 저장 완료");
+      } catch (e) { errAlert(e); }
+    }
+
+    async function confirmRfp() {
+      if (!currentRfpId) return;
+      if (!confirm("Fuseki에 영구 적재합니다. 계속하시겠습니까?")) return;
+      try {
+        const res = await api("POST", `/rfp/${currentRfpId}/confirm`);
+        document.getElementById("confirmLog").innerHTML = `
+          <span class="status ok">적재 완료</span>
+          project_id=<b>${res.project_id}</b> · tasks=${res.tasks_created} · triples=${res.triples_inserted}
+          <br><span class="muted">${res.next_step}</span>
+          <br><button class="btn secondary" onclick="jumpToRecommend('${res.project_id}')">이 프로젝트로 인력 추천 →</button>
+        `;
+        setStatus("rfpStatus", "status: confirmed", "ok");
+      } catch (e) { errAlert(e); }
+    }
+
+    async function loadRfpList() {
+      try {
+        const rows = await api("GET", "/rfp");
+        const tbody = document.querySelector("#rfpListTable tbody");
+        tbody.innerHTML = "";
+        rows.forEach((r) => {
+          tbody.insertAdjacentHTML("beforeend", `
+            <tr>
+              <td>${r.rfp_id}</td>
+              <td>${r.file_name}</td>
+              <td>${r.project_name || "-"}</td>
+              <td><span class="pill">${r.status}</span></td>
+              <td><span class="muted">${r.created_at || ""}</span></td>
+              <td><button class="btn secondary" onclick="restoreRfp('${r.rfp_id}')">이어서</button></td>
+            </tr>
+          `);
+        });
+      } catch (e) { errAlert(e); }
+    }
+
+    async function restoreRfp(rfpId) {
+      try {
+        const res = await api("GET", `/rfp/${rfpId}`);
+        currentRfpId = rfpId;
+        document.getElementById("currentRfpId").textContent = rfpId;
+        document.getElementById("analyzeCard").style.display = "block";
+        setStatus("rfpStatus", `status: ${res.status}`, "ok");
+        if (res.project || (res.wbs && res.wbs.length)) {
+          renderAnalysis({
+            project: res.project,
+            wbs: res.wbs,
+            required_roles: res.required_roles,
+            confidence_score: res.confidence_score,
+          });
+        }
+      } catch (e) { errAlert(e); }
+    }
+
+    // ── 인력 추천 ──────────────────────────────────────────
+    async function runRecommend() {
+      const projectId = document.getElementById("recProjectId").value.trim();
+      if (!projectId) { alert("project_id를 입력하세요"); return; }
+      const topK = parseInt(document.getElementById("recTopK").value) || null;
+      const persist = document.getElementById("recPersist").checked;
+      try {
+        document.getElementById("recLog").textContent = "추천 계산 중…";
+        const res = await api("POST", `/projects/${projectId}/recommend-staff`, {
+          top_k: topK, persist,
+        });
+        const tbody = document.querySelector("#recTable tbody");
+        tbody.innerHTML = "";
+        res.forEach((item) => {
+          const skills = (item.matched_skills || [])
+            .map((s) => `${s.skill}(${s.proficiency.toFixed(2)})`).join(" · ");
+          tbody.insertAdjacentHTML("beforeend", `
+            <tr>
+              <td>#${item.rank}</td>
+              <td>${item.person_name} <span class="muted">(${item.person_id})</span></td>
+              <td>${item.similarity_score.toFixed(2)}</td>
+              <td>${item.availability_score?.toFixed(2) ?? "-"}</td>
+              <td>${skills}</td>
+              <td class="muted">${item.reason}</td>
+            </tr>
+          `);
+        });
+        document.getElementById("recLog").innerHTML = `
+          <span class="status ok">완료</span> ${res.length}명 추천
+          ${persist ? '· Fuseki에 <b>적재됨</b>' : '· 계산만 (비적재)'}
+        `;
+      } catch (e) {
+        document.getElementById("recLog").innerHTML = `<span class="status err">${e.message}</span>`;
+      }
+    }
+
+    // ── 가용성 ────────────────────────────────────────────
+    async function loadAvailability() {
+      const projectId = document.getElementById("availProjectId").value.trim();
+      const q = projectId ? `?projectId=${encodeURIComponent(projectId)}` : "";
+      try {
+        const rows = await api("GET", `/persons/availability${q}`);
+        const tbody = document.querySelector("#availTable tbody");
+        tbody.innerHTML = "";
+        rows.forEach((p) => {
+          tbody.insertAdjacentHTML("beforeend", `
+            <tr>
+              <td>${p.person_id}</td>
+              <td>${p.person_name}</td>
+              <td>${p.role || "-"}</td>
+              <td>${p.active_tasks}</td>
+              <td>${p.availability_score?.toFixed(2) ?? "-"}</td>
+              <td>${p.computed_availability?.toFixed(2) ?? "-"}</td>
+            </tr>
+          `);
+        });
+      } catch (e) { errAlert(e); }
+    }
+
+    // 초기 로드
+    loadProjects();
+  </script>
+</body>
+</html>

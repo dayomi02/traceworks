@@ -1,0 +1,817 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix pm:   <https://ontology.example.org/project-management#> .
+@prefix inst: <https://ontology.example.org/instances#> .
+
+# ══════════════════════════════════════════════════════════════════
+#  테스트 시나리오 개요
+#
+#  회사: (주)넥스트웨이브 — 핀테크 스타트업
+#  프로젝트: "페이플로우 v2" 모바일 간편결제 앱 리뉴얼 (진행 중)
+#             "마케팅 애널리틱스 대시보드" (신규 등록 → 인력 추천 트리거)
+#
+#  검증 가능한 비즈니스 로직:
+#  [BL-01] 기획자가 Figma 화면 수정 → 담당 개발자에게 맥락 알림
+#  [BL-02] 새 프로젝트 등록 → 과거 이력·역량·협업 시너지 기반 인력 추천
+#  [BL-03] GitHub 커밋 → WBS Task 진척률 자동 갱신
+#  [BL-04] Slack 블로커 메시지 → IssueSignal 생성 → 관련자 긴급 알림
+#  [BL-05] 업무 이력 누적 → CompetencySignal → 커리어 그래프 갱신
+#  [BL-06] 협업 이벤트 누적 → CollaborationSignal → 시너지 점수 계산
+#  [BL-07] ProgressSignal 집계 → WBSSnapshot → 주간 보고서 자동 생성
+# ══════════════════════════════════════════════════════════════════
+
+
+# ──────────────────────────────────────────────────────────────────
+#  조직 (Organization)
+# ──────────────────────────────────────────────────────────────────
+
+inst:org_nextwave
+    a owl:NamedIndividual, pm:Organization ;
+    pm:orgId "ORG001" ;
+    pm:orgName "(주)넥스트웨이브" .
+
+inst:org_product_team
+    a owl:NamedIndividual, pm:Organization ;
+    pm:orgId "ORG002" ;
+    pm:orgName "프로덕트팀" .
+
+inst:org_dev_team
+    a owl:NamedIndividual, pm:Organization ;
+    pm:orgId "ORG003" ;
+    pm:orgName "개발팀" .
+
+inst:org_design_team
+    a owl:NamedIndividual, pm:Organization ;
+    pm:orgId "ORG004" ;
+    pm:orgName "디자인팀" .
+
+
+# ──────────────────────────────────────────────────────────────────
+#  역량 (Skill)
+#  실무자들이 보유한 기술·도메인·소프트 스킬 목록입니다.
+# ──────────────────────────────────────────────────────────────────
+
+inst:skill_react
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK001" ;
+    pm:skillName "React" ;
+    pm:skillCategory "TECHNICAL" ;
+    pm:proficiencyLevel "0.91"^^xsd:decimal ;
+    pm:skillEvidenceCount "62"^^xsd:integer .
+
+inst:skill_typescript
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK002" ;
+    pm:skillName "TypeScript" ;
+    pm:skillCategory "TECHNICAL" ;
+    pm:proficiencyLevel "0.87"^^xsd:decimal ;
+    pm:skillEvidenceCount "55"^^xsd:integer .
+
+inst:skill_react_native
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK003" ;
+    pm:skillName "React Native" ;
+    pm:skillCategory "TECHNICAL" ;
+    pm:proficiencyLevel "0.78"^^xsd:decimal ;
+    pm:skillEvidenceCount "34"^^xsd:integer .
+
+inst:skill_node
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK004" ;
+    pm:skillName "Node.js" ;
+    pm:skillCategory "TECHNICAL" ;
+    pm:proficiencyLevel "0.82"^^xsd:decimal ;
+    pm:skillEvidenceCount "41"^^xsd:integer .
+
+inst:skill_python
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK005" ;
+    pm:skillName "Python" ;
+    pm:skillCategory "TECHNICAL" ;
+    pm:proficiencyLevel "0.74"^^xsd:decimal ;
+    pm:skillEvidenceCount "28"^^xsd:integer .
+
+inst:skill_postgresql
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK006" ;
+    pm:skillName "PostgreSQL" ;
+    pm:skillCategory "TECHNICAL" ;
+    pm:proficiencyLevel "0.69"^^xsd:decimal ;
+    pm:skillEvidenceCount "22"^^xsd:integer .
+
+inst:skill_figma
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK007" ;
+    pm:skillName "Figma" ;
+    pm:skillCategory "TECHNICAL" ;
+    pm:proficiencyLevel "0.95"^^xsd:decimal ;
+    pm:skillEvidenceCount "88"^^xsd:integer .
+
+inst:skill_ux_planning
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK008" ;
+    pm:skillName "UX 기획" ;
+    pm:skillCategory "DOMAIN" ;
+    pm:proficiencyLevel "0.89"^^xsd:decimal ;
+    pm:skillEvidenceCount "71"^^xsd:integer .
+
+inst:skill_fintech_domain
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK009" ;
+    pm:skillName "핀테크 도메인" ;
+    pm:skillCategory "DOMAIN" ;
+    pm:proficiencyLevel "0.83"^^xsd:decimal ;
+    pm:skillEvidenceCount "48"^^xsd:integer .
+
+inst:skill_data_analytics
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK010" ;
+    pm:skillName "데이터 애널리틱스" ;
+    pm:skillCategory "DOMAIN" ;
+    pm:proficiencyLevel "0.76"^^xsd:decimal ;
+    pm:skillEvidenceCount "31"^^xsd:integer .
+
+inst:skill_leadership
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK011" ;
+    pm:skillName "리더십" ;
+    pm:skillCategory "SOFT_SKILL" ;
+    pm:proficiencyLevel "0.85"^^xsd:decimal ;
+    pm:skillEvidenceCount "39"^^xsd:integer .
+
+inst:skill_communication
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK012" ;
+    pm:skillName "커뮤니케이션" ;
+    pm:skillCategory "SOFT_SKILL" ;
+    pm:proficiencyLevel "0.90"^^xsd:decimal ;
+    pm:skillEvidenceCount "67"^^xsd:integer .
+
+
+# ──────────────────────────────────────────────────────────────────
+#  실무자 (Person) — 5명의 페르소나
+#
+#  박지수 (PM)        — 프로젝트 전체를 조율, 보고서 주요 수신자
+#  이하은 (기획자)    — Figma 화면 설계 담당, BL-01 트리거 주체
+#  김태양 (FE 개발자) — 로그인·결제 화면 담당, BL-01 알림 수신자
+#  정서연 (BE 개발자) — API·DB 담당, BL-03 커밋 주체
+#  최민준 (FE 개발자) — 신규 분석 대시보드 후보, BL-02 추천 대상
+# ──────────────────────────────────────────────────────────────────
+
+inst:person_jisoo
+    a owl:NamedIndividual, pm:Person ;
+    pm:personId "P001" ;
+    pm:personName "박지수" ;
+    pm:email "jisoo.park@nextwave.io" ;
+    pm:role "PM" ;
+    pm:slackUserId "SLACK_U001" ;
+    pm:notionUserId "NOTION_U001" ;
+    pm:availabilityScore "0.45"^^xsd:decimal ;
+    pm:belongsTo inst:org_product_team ;
+    pm:hasSkill inst:skill_leadership ;
+    pm:hasSkill inst:skill_communication ;
+    pm:hasSkill inst:skill_fintech_domain .
+
+inst:person_haeun
+    a owl:NamedIndividual, pm:Person ;
+    pm:personId "P002" ;
+    pm:personName "이하은" ;
+    pm:email "haeun.lee@nextwave.io" ;
+    pm:role "기획자" ;
+    pm:slackUserId "SLACK_U002" ;
+    pm:figmaUserId "FIGMA_U002" ;
+    pm:notionUserId "NOTION_U002" ;
+    pm:availabilityScore "0.55"^^xsd:decimal ;
+    pm:belongsTo inst:org_product_team ;
+    pm:hasSkill inst:skill_figma ;
+    pm:hasSkill inst:skill_ux_planning ;
+    pm:hasSkill inst:skill_fintech_domain ;
+    pm:hasSkill inst:skill_communication .
+
+inst:person_taeyang
+    a owl:NamedIndividual, pm:Person ;
+    pm:personId "P003" ;
+    pm:personName "김태양" ;
+    pm:email "taeyang.kim@nextwave.io" ;
+    pm:role "프론트엔드 개발자" ;
+    pm:slackUserId "SLACK_U003" ;
+    pm:githubLogin "taeyang-dev" ;
+    pm:figmaUserId "FIGMA_U003" ;
+    pm:availabilityScore "0.35"^^xsd:decimal ;
+    pm:belongsTo inst:org_dev_team ;
+    pm:hasSkill inst:skill_react ;
+    pm:hasSkill inst:skill_typescript ;
+    pm:hasSkill inst:skill_react_native ;
+    pm:hasSkill inst:skill_fintech_domain .
+
+inst:person_seoyeon
+    a owl:NamedIndividual, pm:Person ;
+    pm:personId "P004" ;
+    pm:personName "정서연" ;
+    pm:email "seoyeon.jung@nextwave.io" ;
+    pm:role "백엔드 개발자" ;
+    pm:slackUserId "SLACK_U004" ;
+    pm:githubLogin "seoyeon-be" ;
+    pm:notionUserId "NOTION_U004" ;
+    pm:availabilityScore "0.40"^^xsd:decimal ;
+    pm:belongsTo inst:org_dev_team ;
+    pm:hasSkill inst:skill_node ;
+    pm:hasSkill inst:skill_python ;
+    pm:hasSkill inst:skill_postgresql ;
+    pm:hasSkill inst:skill_fintech_domain .
+
+inst:person_minjun
+    a owl:NamedIndividual, pm:Person ;
+    pm:personId "P005" ;
+    pm:personName "최민준" ;
+    pm:email "minjun.choi@nextwave.io" ;
+    pm:role "프론트엔드 개발자" ;
+    pm:slackUserId "SLACK_U005" ;
+    pm:githubLogin "minjun-frontend" ;
+    pm:availabilityScore "0.80"^^xsd:decimal ;
+    pm:belongsTo inst:org_dev_team ;
+    pm:hasSkill inst:skill_react ;
+    pm:hasSkill inst:skill_typescript ;
+    pm:hasSkill inst:skill_python ;
+    pm:hasSkill inst:skill_data_analytics .
+
+# 협업 관계 (collaboratedWith — SymmetricProperty이므로 단방향만 선언)
+inst:person_taeyang
+    pm:collaboratedWith inst:person_haeun ;
+    pm:collaboratedWith inst:person_seoyeon ;
+    pm:synergyScore "0.88"^^xsd:decimal ;       # 하은↔태양 시너지
+    pm:collaborationCount "23"^^xsd:integer .
+
+inst:person_seoyeon
+    pm:collaboratedWith inst:person_jisoo ;
+    pm:synergyScore "0.72"^^xsd:decimal ;
+    pm:collaborationCount "18"^^xsd:integer .
+
+inst:person_minjun
+    pm:collaboratedWith inst:person_taeyang ;
+    pm:synergyScore "0.61"^^xsd:decimal ;
+    pm:collaborationCount "7"^^xsd:integer .
+
+
+# ──────────────────────────────────────────────────────────────────
+#  프로젝트 (Project) — 2개
+#
+#  [진행 중] 페이플로우 v2  — BL-01·03·04·05·06·07 발생 무대
+#  [신규]    마케팅 애널리틱스 대시보드 — BL-02 인력 추천 트리거
+# ──────────────────────────────────────────────────────────────────
+
+inst:project_payflow
+    a owl:NamedIndividual, pm:Project ;
+    pm:projectId "PRJ001" ;
+    pm:projectName "페이플로우 v2" ;
+    pm:projectDomain "핀테크" ;
+    pm:techStack "React Native" ;
+    pm:techStack "TypeScript" ;
+    pm:techStack "Node.js" ;
+    pm:techStack "PostgreSQL" ;
+    pm:difficultyLevel "HIGH" ;
+    pm:projectStatus "ACTIVE" ;
+    pm:startDate "2025-01-15"^^xsd:date ;
+    pm:endDate "2025-06-30"^^xsd:date ;
+    pm:ownedBy inst:org_nextwave .
+
+inst:project_analytics
+    a owl:NamedIndividual, pm:Project ;
+    pm:projectId "PRJ002" ;
+    pm:projectName "마케팅 애널리틱스 대시보드" ;
+    pm:projectDomain "데이터 애널리틱스" ;
+    pm:techStack "React" ;
+    pm:techStack "TypeScript" ;
+    pm:techStack "Python" ;
+    pm:techStack "PostgreSQL" ;
+    pm:difficultyLevel "MEDIUM" ;
+    pm:projectStatus "PLANNING" ;
+    pm:startDate "2025-05-01"^^xsd:date ;
+    pm:endDate "2025-08-31"^^xsd:date ;
+    pm:ownedBy inst:org_nextwave .
+
+# 참여 관계
+inst:person_jisoo  pm:participatesIn inst:project_payflow .
+inst:person_haeun  pm:participatesIn inst:project_payflow .
+inst:person_taeyang pm:participatesIn inst:project_payflow .
+inst:person_seoyeon pm:participatesIn inst:project_payflow .
+
+
+# ──────────────────────────────────────────────────────────────────
+#  업무 (Task) — 페이플로우 v2 WBS 5개
+#
+#  T001  1.0   로그인 화면 UI 구현        — 김태양 담당 (BL-01·03)
+#  T002  1.1   결제 플로우 화면 구현       — 김태양 담당
+#  T003  2.0   결제 API 개발              — 정서연 담당 (BL-03)
+#  T004  2.1   사용자 인증 API 개발        — 정서연 담당 (BL-04 블로커)
+#  T005  3.0   통합 테스트               — 미할당 (BL-02 신규 필요)
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_login_ui
+    a owl:NamedIndividual, pm:Task ;
+    pm:taskId "T001" ;
+    pm:taskName "로그인 화면 UI 구현" ;
+    pm:wbsCode "1.0" ;
+    pm:taskStatus "IN_PROGRESS" ;
+    pm:progressPercent "55"^^xsd:integer ;
+    pm:plannedHours "40"^^xsd:decimal ;
+    pm:actualHours "24"^^xsd:decimal ;
+    pm:dueDate "2025-04-25"^^xsd:date ;
+    pm:hasSourceFile "src/screens/auth/LoginScreen.tsx" ;
+    pm:hasSourceFile "src/components/auth/LoginForm.tsx" ;
+    pm:hasSourceFile "src/components/auth/SocialLoginButton.tsx" ;
+    pm:assignedTo inst:person_taeyang ;
+    pm:requiresSkill inst:skill_react_native ;
+    pm:requiresSkill inst:skill_typescript .
+
+inst:task_payment_ui
+    a owl:NamedIndividual, pm:Task ;
+    pm:taskId "T002" ;
+    pm:taskName "결제 플로우 화면 구현" ;
+    pm:wbsCode "1.1" ;
+    pm:taskStatus "TODO" ;
+    pm:progressPercent "10"^^xsd:integer ;
+    pm:plannedHours "56"^^xsd:decimal ;
+    pm:actualHours "5"^^xsd:decimal ;
+    pm:dueDate "2025-05-10"^^xsd:date ;
+    pm:hasSourceFile "src/screens/payment/PaymentFlow.tsx" ;
+    pm:hasSourceFile "src/screens/payment/CardInput.tsx" ;
+    pm:assignedTo inst:person_taeyang ;
+    pm:requiresSkill inst:skill_react_native ;
+    pm:requiresSkill inst:skill_fintech_domain ;
+    pm:dependsOn inst:task_login_ui .
+
+inst:task_payment_api
+    a owl:NamedIndividual, pm:Task ;
+    pm:taskId "T003" ;
+    pm:taskName "결제 API 개발" ;
+    pm:wbsCode "2.0" ;
+    pm:taskStatus "IN_PROGRESS" ;
+    pm:progressPercent "70"^^xsd:integer ;
+    pm:plannedHours "64"^^xsd:decimal ;
+    pm:actualHours "48"^^xsd:decimal ;
+    pm:dueDate "2025-04-20"^^xsd:date ;
+    pm:hasSourceFile "src/api/payment/paymentController.ts" ;
+    pm:hasSourceFile "src/api/payment/paymentService.ts" ;
+    pm:hasSourceFile "src/db/migrations/002_payment_tables.sql" ;
+    pm:assignedTo inst:person_seoyeon ;
+    pm:requiresSkill inst:skill_node ;
+    pm:requiresSkill inst:skill_postgresql ;
+    pm:requiresSkill inst:skill_fintech_domain .
+
+inst:task_auth_api
+    a owl:NamedIndividual, pm:Task ;
+    pm:taskId "T004" ;
+    pm:taskName "사용자 인증 API 개발" ;
+    pm:wbsCode "2.1" ;
+    pm:taskStatus "IN_PROGRESS" ;
+    pm:progressPercent "80"^^xsd:integer ;
+    pm:plannedHours "32"^^xsd:decimal ;
+    pm:actualHours "30"^^xsd:decimal ;
+    pm:dueDate "2025-04-18"^^xsd:date ;
+    pm:hasSourceFile "src/api/auth/authController.ts" ;
+    pm:hasSourceFile "src/api/auth/jwtService.ts" ;
+    pm:assignedTo inst:person_seoyeon ;
+    pm:requiresSkill inst:skill_node ;
+    pm:requiresSkill inst:skill_fintech_domain .
+
+inst:task_integration_test
+    a owl:NamedIndividual, pm:Task ;
+    pm:taskId "T005" ;
+    pm:taskName "통합 테스트" ;
+    pm:wbsCode "3.0" ;
+    pm:taskStatus "TODO" ;
+    pm:progressPercent "0"^^xsd:integer ;
+    pm:plannedHours "24"^^xsd:decimal ;
+    pm:actualHours "0"^^xsd:decimal ;
+    pm:dueDate "2025-06-15"^^xsd:date ;
+    pm:requiresSkill inst:skill_react_native ;
+    pm:requiresSkill inst:skill_node ;
+    pm:dependsOn inst:task_login_ui ;
+    pm:dependsOn inst:task_payment_ui ;
+    pm:dependsOn inst:task_payment_api ;
+    pm:dependsOn inst:task_auth_api .
+
+# 프로젝트 → Task 연결
+inst:project_payflow
+    pm:hasTask inst:task_login_ui ;
+    pm:hasTask inst:task_payment_ui ;
+    pm:hasTask inst:task_payment_api ;
+    pm:hasTask inst:task_auth_api ;
+    pm:hasTask inst:task_integration_test .
+
+# 상위-하위 Task 관계 (WBS 계층)
+inst:task_payment_ui pm:parentTask inst:task_login_ui .
+
+
+# ──────────────────────────────────────────────────────────────────
+#  디자인 컴포넌트 (DesignComponent) — Figma Frame 2개
+#  BL-01 시나리오에서 기획자가 수정하는 컴포넌트들입니다.
+# ──────────────────────────────────────────────────────────────────
+
+inst:component_login_screen
+    a owl:NamedIndividual, pm:DesignComponent ;
+    pm:figmaFrameId "FRAME_9281KA" ;
+    pm:componentName "LoginScreen" ;
+    pm:figmaFileUrl "https://figma.com/file/payflow-v2/login"^^xsd:anyURI ;
+    pm:implementedBy inst:task_login_ui .
+
+inst:component_payment_flow
+    a owl:NamedIndividual, pm:DesignComponent ;
+    pm:figmaFrameId "FRAME_4472PB" ;
+    pm:componentName "PaymentFlow" ;
+    pm:figmaFileUrl "https://figma.com/file/payflow-v2/payment"^^xsd:anyURI ;
+    pm:implementedBy inst:task_payment_ui .
+
+
+# ══════════════════════════════════════════════════════════════════
+#  [BL-01] 기획자 Figma 수정 → 개발자 맥락 알림
+#
+#  시나리오: 이하은(기획자)이 LoginScreen의 소셜 로그인 버튼 레이아웃을
+#  변경했습니다. 시스템이 DesignEvent를 수신하고,
+#  implementedBy → assignedTo 체인을 따라 김태양(개발자)에게
+#  수정 필요 파일과 변경 내용을 담은 Slack 알림을 자동 발송합니다.
+# ══════════════════════════════════════════════════════════════════
+
+# WorkEvent: Figma webhook 수신
+inst:event_figma_login_change
+    a owl:NamedIndividual, pm:DesignEvent ;
+    pm:eventId "EVT_D001" ;
+    pm:eventSource "FIGMA" ;
+    pm:eventTimestamp "2025-04-07T10:23:00Z"^^xsd:dateTime ;
+    pm:figmaEventFrameId "FRAME_9281KA" ;
+    pm:designChangeType "FRAME_MODIFIED" ;
+    pm:affectedComponents "[\"SocialLoginButton\", \"LoginFormContainer\"]" ;
+    pm:designDiffSummary "소셜 로그인 버튼(카카오·네이버)이 화면 하단에서 상단으로 이동. 로그인 폼과의 간격 24px → 16px 변경. '자동 로그인' 체크박스 추가." ;
+    pm:rawPayload "{\"event\":\"file:update\",\"fileId\":\"payflow-v2\",\"frameId\":\"FRAME_9281KA\",\"editorId\":\"FIGMA_U002\"}" ;
+    pm:performedBy inst:person_haeun ;
+    pm:relatedToTask inst:task_login_ui ;
+    pm:relatedToComponent inst:component_login_screen .
+
+# SemanticUnit: IssueSignal (디자인 변경 → 코드 수정 필요)
+inst:signal_login_design_change
+    a owl:NamedIndividual, pm:IssueSignal ;
+    pm:semanticId "SEM_D001" ;
+    pm:meaning "기획자 이하은이 LoginScreen Frame을 수정함. 소셜 로그인 버튼 위치 변경 및 자동 로그인 체크박스 신규 추가로 인해 SocialLoginButton.tsx 및 LoginForm.tsx 수정 필요." ;
+    pm:confidenceScore "0.93"^^xsd:decimal ;
+    pm:derivedFromEvent inst:event_figma_login_change ;
+    pm:interpretedAt "2025-04-07T10:23:08Z"^^xsd:dateTime ;
+    pm:issueType "SCOPE_CHANGE" ;
+    pm:issueSeverity "MEDIUM" ;
+    pm:issueResolved "false"^^xsd:boolean ;
+    pm:affectedTasks inst:task_login_ui .
+
+# Alert: 김태양에게 Slack 알림 발송
+inst:alert_login_design_change
+    a owl:NamedIndividual, pm:Alert ;
+    pm:alertId "ALT001" ;
+    pm:alertType "DESIGN_CHANGED" ;
+    pm:alertTitle "[기획 변경] LoginScreen 수정 — 코드 반영 필요 (WBS 1.0)" ;
+    pm:alertBody """안녕하세요 김태양님, 기획자 이하은님이 LoginScreen을 수정했습니다.
+
+■ 변경 내용
+  · 소셜 로그인 버튼(카카오·네이버) 위치: 하단 → 상단 이동
+  · 로그인 폼 상단 간격: 24px → 16px
+  · '자동 로그인' 체크박스 신규 추가
+
+■ 수정 필요 파일
+  · src/components/auth/SocialLoginButton.tsx  (버튼 레이아웃)
+  · src/components/auth/LoginForm.tsx          (간격 및 체크박스 추가)
+
+■ 관련 정보
+  · WBS: 1.0 로그인 화면 UI 구현
+  · Figma: https://figma.com/file/payflow-v2/login
+  · 현재 진척률: 55% → 반영 후 갱신 예정""" ;
+    pm:alertRecipients inst:person_taeyang ;
+    pm:alertRecipients inst:person_jisoo ;
+    pm:triggeringSignal inst:signal_login_design_change ;
+    pm:deliveryChannel "SLACK" ;
+    pm:alertSentAt "2025-04-07T10:23:09Z"^^xsd:dateTime .
+
+
+# ══════════════════════════════════════════════════════════════════
+#  [BL-03] GitHub 커밋 → WBS Task 진척률 자동 갱신
+#
+#  시나리오: 정서연(BE 개발자)이 결제 API의 핵심 로직을 커밋했습니다.
+#  커밋 메시지와 변경 파일을 분석해 T003(결제 API 개발)의
+#  진척률이 70% → 85%로 자동 갱신됩니다.
+# ══════════════════════════════════════════════════════════════════
+
+inst:event_commit_payment_api
+    a owl:NamedIndividual, pm:GitCommitEvent ;
+    pm:eventId "EVT_G001" ;
+    pm:eventSource "GITHUB" ;
+    pm:eventTimestamp "2025-04-07T14:05:22Z"^^xsd:dateTime ;
+    pm:commitHash "a3f9c21b8de042e1" ;
+    pm:repoName "nextwave/payflow-v2-backend" ;
+    pm:branchName "feature/T003-payment-api" ;
+    pm:commitMessage "feat(payment): 카드 결제 승인 로직 완성 및 실패 시 롤백 처리 추가" ;
+    pm:changedFilePaths "[\"src/api/payment/paymentService.ts\",\"src/api/payment/paymentController.ts\"]" ;
+    pm:linesAdded "187"^^xsd:integer ;
+    pm:linesDeleted "23"^^xsd:integer ;
+    pm:gitEventType "COMMIT" ;
+    pm:rawPayload "{\"ref\":\"refs/heads/feature/T003-payment-api\",\"pusher\":{\"login\":\"seoyeon-be\"}}" ;
+    pm:performedBy inst:person_seoyeon ;
+    pm:relatedToTask inst:task_payment_api .
+
+# SemanticUnit: ProgressSignal — 진척률 +15%
+inst:signal_payment_api_progress
+    a owl:NamedIndividual, pm:ProgressSignal ;
+    pm:semanticId "SEM_P001" ;
+    pm:meaning "정서연이 결제 승인 핵심 로직을 완성함. 카드 결제 흐름의 주요 구현이 완료되어 T003 진척률 약 15% 증가로 판단." ;
+    pm:confidenceScore "0.88"^^xsd:decimal ;
+    pm:derivedFromEvent inst:event_commit_payment_api ;
+    pm:interpretedAt "2025-04-07T14:05:30Z"^^xsd:dateTime ;
+    pm:progressDelta "15"^^xsd:integer ;
+    pm:signalRefTask inst:task_payment_api .
+
+# [BL-05] 동일 커밋에서 CompetencySignal도 동시 생성
+inst:signal_seoyeon_node_competency
+    a owl:NamedIndividual, pm:CompetencySignal ;
+    pm:semanticId "SEM_C001" ;
+    pm:meaning "정서연이 Node.js 기반 결제 트랜잭션 롤백 로직을 구현. 고난도 비동기 처리 패턴 사용이 확인되어 Node.js 역량 발휘로 기록." ;
+    pm:confidenceScore "0.85"^^xsd:decimal ;
+    pm:derivedFromEvent inst:event_commit_payment_api ;
+    pm:interpretedAt "2025-04-07T14:05:31Z"^^xsd:dateTime ;
+    pm:demonstratedSkill inst:skill_node ;
+    pm:competencyContext "결제 API 트랜잭션 롤백 로직 구현 (고난도 비동기 처리)" ;
+    pm:competencyStrength "0.82"^^xsd:decimal .
+
+inst:signal_seoyeon_fintech_competency
+    a owl:NamedIndividual, pm:CompetencySignal ;
+    pm:semanticId "SEM_C002" ;
+    pm:meaning "결제 도메인 핵심 비즈니스 로직 구현을 통한 핀테크 도메인 역량 발휘." ;
+    pm:confidenceScore "0.79"^^xsd:decimal ;
+    pm:derivedFromEvent inst:event_commit_payment_api ;
+    pm:interpretedAt "2025-04-07T14:05:32Z"^^xsd:dateTime ;
+    pm:demonstratedSkill inst:skill_fintech_domain ;
+    pm:competencyContext "카드 결제 승인·실패·롤백 비즈니스 로직 완성" ;
+    pm:competencyStrength "0.78"^^xsd:decimal .
+
+
+# ══════════════════════════════════════════════════════════════════
+#  [BL-04] Slack 블로커 메시지 → IssueSignal → 긴급 알림
+#
+#  시나리오: 정서연이 Slack에 "PG사 인증 API 스펙이 문서와 달라서
+#  사용자 인증 API 연동이 블로킹됨"이라고 메시지를 보냈습니다.
+#  시스템이 이를 BLOCKER IssueSignal로 분류하고,
+#  T004(인증 API)에 의존하는 T002(결제 플로우)까지 파급 범위를 계산하여
+#  PM인 박지수에게 HIGH 긴급 알림을 발송합니다.
+# ══════════════════════════════════════════════════════════════════
+
+inst:event_slack_blocker
+    a owl:NamedIndividual, pm:MessageEvent ;
+    pm:eventId "EVT_S001" ;
+    pm:eventSource "SLACK" ;
+    pm:eventTimestamp "2025-04-07T16:41:00Z"^^xsd:dateTime ;
+    pm:slackChannel "C-payflow-dev" ;
+    pm:messageText "🚨 T004 이슈 — PG사(KPay) 인증 API 스펙이 공식 문서(v2.1)와 실제 응답이 달라요. access_token 필드명이 문서엔 accessToken인데 실제로는 access_token으로 내려옵니다. 인증 흐름 전체가 막혀서 오늘 T004 완료가 불가능할 것 같아요. @박지수 @김태양 확인 부탁드립니다." ;
+    pm:messageIntent "BLOCKER_REPORT" ;
+    pm:sentimentScore "-0.62"^^xsd:decimal ;
+    pm:mentionedPersons "[\"SLACK_U001\",\"SLACK_U003\"]" ;
+    pm:rawPayload "{\"channel\":\"C-payflow-dev\",\"user\":\"SLACK_U004\",\"ts\":\"1744043260.000\"}" ;
+    pm:performedBy inst:person_seoyeon ;
+    pm:relatedToTask inst:task_auth_api .
+
+# SemanticUnit: IssueSignal — BLOCKER, HIGH
+inst:signal_auth_api_blocker
+    a owl:NamedIndividual, pm:IssueSignal ;
+    pm:semanticId "SEM_I001" ;
+    pm:meaning "PG사 인증 API 응답 스펙 불일치로 T004(사용자 인증 API) 완료 불가. T004에 의존하는 T005(통합 테스트) 일정도 위험." ;
+    pm:confidenceScore "0.97"^^xsd:decimal ;
+    pm:derivedFromEvent inst:event_slack_blocker ;
+    pm:interpretedAt "2025-04-07T16:41:05Z"^^xsd:dateTime ;
+    pm:issueType "BLOCKER" ;
+    pm:issueSeverity "HIGH" ;
+    pm:issueResolved "false"^^xsd:boolean ;
+    pm:affectedTasks inst:task_auth_api ;
+    pm:affectedTasks inst:task_integration_test .
+
+# Alert: PM 박지수에게 HIGH 긴급 알림
+inst:alert_auth_blocker
+    a owl:NamedIndividual, pm:Alert ;
+    pm:alertId "ALT002" ;
+    pm:alertType "ISSUE_DETECTED" ;
+    pm:alertTitle "🚨 [BLOCKER] T004 인증 API — PG사 스펙 불일치, 즉시 확인 필요" ;
+    pm:alertBody """박지수 PM님, HIGH 심각도 블로커가 감지되었습니다.
+
+■ 이슈 요약
+  · PG사(KPay) 인증 API 응답 필드명 불일치
+    문서: accessToken / 실제 응답: access_token
+  · 보고자: 정서연 (2025-04-07 16:41)
+
+■ 영향 범위
+  · T004 사용자 인증 API 개발 (WBS 2.1) — 오늘 완료 불가, 현 진척 80%
+  · T005 통합 테스트 (WBS 3.0) — T004 의존으로 시작 불가
+
+■ 마감일 리스크
+  · T004 마감: 2025-04-18 (D-11) → 지연 위험
+  · T005 마감: 2025-06-15 → 연쇄 지연 가능
+
+■ 권장 조치
+  · KPay 기술 지원팀 즉시 연락 (정서연 담당)
+  · T004 마감일 조정 여부 결정 필요""" ;
+    pm:alertRecipients inst:person_jisoo ;
+    pm:alertRecipients inst:person_taeyang ;
+    pm:triggeringSignal inst:signal_auth_api_blocker ;
+    pm:deliveryChannel "SLACK" ;
+    pm:alertSentAt "2025-04-07T16:41:06Z"^^xsd:dateTime .
+
+
+# ══════════════════════════════════════════════════════════════════
+#  [BL-06] 협업 이벤트 누적 → CollaborationSignal
+#
+#  시나리오: 이하은(기획자)이 김태양(FE 개발자)의 PR에
+#  Figma 코멘트로 디자인 검토 의견을 남겼습니다.
+# ══════════════════════════════════════════════════════════════════
+
+inst:event_figma_comment_review
+    a owl:NamedIndividual, pm:DesignEvent ;
+    pm:eventId "EVT_D002" ;
+    pm:eventSource "FIGMA" ;
+    pm:eventTimestamp "2025-04-06T11:30:00Z"^^xsd:dateTime ;
+    pm:figmaEventFrameId "FRAME_9281KA" ;
+    pm:designChangeType "COMMENT_ADDED" ;
+    pm:affectedComponents "[\"SocialLoginButton\"]" ;
+    pm:designDiffSummary "이하은이 SocialLoginButton 컴포넌트에 구현 검토 코멘트 작성: 버튼 간격 및 터치 영역 피드백 제공." ;
+    pm:rawPayload "{\"event\":\"comment:create\",\"fileId\":\"payflow-v2\",\"frameId\":\"FRAME_9281KA\"}" ;
+    pm:performedBy inst:person_haeun ;
+    pm:relatedToTask inst:task_login_ui ;
+    pm:relatedToComponent inst:component_login_screen .
+
+# SemanticUnit: CollaborationSignal — 이하은↔김태양 디자인 리뷰 협업
+inst:signal_collab_haeun_taeyang
+    a owl:NamedIndividual, pm:CollaborationSignal ;
+    pm:semanticId "SEM_CL001" ;
+    pm:meaning "기획자 이하은이 개발자 김태양의 구현물에 대해 Figma 코멘트로 디자인 검토 피드백을 제공함. 기획-개발 간 품질 협업 상호작용으로 기록." ;
+    pm:confidenceScore "0.91"^^xsd:decimal ;
+    pm:derivedFromEvent inst:event_figma_comment_review ;
+    pm:interpretedAt "2025-04-06T11:30:08Z"^^xsd:dateTime ;
+    pm:collaboratorA inst:person_haeun ;
+    pm:collaboratorB inst:person_taeyang ;
+    pm:collaborationType "FIGMA_COMMENT" ;
+    pm:interactionQuality "0.75"^^xsd:decimal .
+
+# Notion 공동 편집 이벤트 (추가 협업 증거)
+inst:event_notion_coedit
+    a owl:NamedIndividual, pm:DocumentEvent ;
+    pm:eventId "EVT_N001" ;
+    pm:eventSource "NOTION" ;
+    pm:eventTimestamp "2025-04-05T09:15:00Z"^^xsd:dateTime ;
+    pm:notionPageId "NOTION_PAGE_001" ;
+    pm:documentEventType "PAGE_EDITED" ;
+    pm:editDelta "결제 화면 UX 플로우 섹션에 엣지케이스(잔액 부족, 카드 만료) 시나리오 추가. 정서연·이하은 공동 편집." ;
+    pm:rawPayload "{\"pageId\":\"NOTION_PAGE_001\",\"editorId\":\"NOTION_U002\"}" ;
+    pm:performedBy inst:person_haeun ;
+    pm:relatedToTask inst:task_payment_ui .
+
+inst:signal_collab_haeun_seoyeon
+    a owl:NamedIndividual, pm:CollaborationSignal ;
+    pm:semanticId "SEM_CL002" ;
+    pm:meaning "기획자 이하은과 백엔드 개발자 정서연이 Notion 기획 문서를 공동 편집하며 결제 엣지케이스를 함께 정의함. 기획-개발 간 깊은 협업 신호." ;
+    pm:confidenceScore "0.86"^^xsd:decimal ;
+    pm:derivedFromEvent inst:event_notion_coedit ;
+    pm:interpretedAt "2025-04-05T09:15:10Z"^^xsd:dateTime ;
+    pm:collaboratorA inst:person_haeun ;
+    pm:collaboratorB inst:person_seoyeon ;
+    pm:collaborationType "NOTION_CO_EDIT" ;
+    pm:interactionQuality "0.82"^^xsd:decimal .
+
+
+# ══════════════════════════════════════════════════════════════════
+#  [BL-07] ProgressSignal 집계 → WBSSnapshot → 주간 보고서
+#
+#  시나리오: 2025년 4월 7일(월) 기준 프로젝트 전체 진척 스냅샷이
+#  생성되고, LLM이 주간 보고서 초안을 자동으로 생성합니다.
+# ══════════════════════════════════════════════════════════════════
+
+inst:snapshot_payflow_w14
+    a owl:NamedIndividual, pm:WBSSnapshot ;
+    pm:snapshotId "SNAP_W14_PRJ001" ;
+    pm:snapshotProject inst:project_payflow ;
+    pm:overallProgress "52"^^xsd:integer ;
+    pm:snapshotCreatedAt "2025-04-07T18:00:00Z"^^xsd:dateTime ;
+    pm:atRiskTaskCount "2"^^xsd:integer .
+
+# 주간 보고서 (개인: 정서연)
+inst:report_seoyeon_weekly
+    a owl:NamedIndividual, pm:Report ;
+    pm:reportId "RPT_W14_P004" ;
+    pm:reportType "WEEKLY_PERSONAL" ;
+    pm:reportPeriodStart "2025-04-01"^^xsd:date ;
+    pm:reportPeriodEnd "2025-04-07"^^xsd:date ;
+    pm:reportSubject inst:person_seoyeon ;
+    pm:reportContent """# 주간 업무 보고 — 정서연 (2025-04-01 ~ 04-07)
+
+## 이번 주 완료 업무
+- **T003 결제 API 개발** (WBS 2.0): 카드 결제 승인 로직 완성 및 실패 시 롤백 처리 구현 (+15%, 현 85%)
+  - 변경 파일: paymentService.ts, paymentController.ts
+  - 추가 187줄 / 삭제 23줄
+
+## 진행 중 이슈
+- **T004 인증 API 블로커** (HIGH): KPay PG사 API 스펙 불일치 발견
+  - access_token 필드명 불일치 → 기술 지원 접수 예정
+  - 마감일(04-18) 준수 위협 → PM과 일정 재조율 논의 필요
+
+## 다음 주 계획
+- KPay 기술 지원 답변 수신 후 T004 수정 완료 목표
+- T003 나머지 15% (엣지케이스 처리 및 부하 테스트) 완료 예정
+
+## 역량 발휘 기록 (자동 측정)
+- Node.js 트랜잭션 처리: 고난도 패턴 적용 (강도 0.82)
+- 핀테크 도메인: 결제 비즈니스 로직 완성 (강도 0.78)""" .
+
+# 프로젝트 월간 보고서
+inst:report_payflow_monthly
+    a owl:NamedIndividual, pm:Report ;
+    pm:reportId "RPT_M03_PRJ001" ;
+    pm:reportType "MONTHLY_PROJECT" ;
+    pm:reportPeriodStart "2025-04-01"^^xsd:date ;
+    pm:reportPeriodEnd "2025-04-30"^^xsd:date ;
+    pm:reportSubject inst:project_payflow ;
+    pm:reportContent """# 페이플로우 v2 4월 프로젝트 현황 보고
+
+## 전체 진척률: 52% (계획 대비 -3%p)
+
+## Task별 현황
+| WBS   | Task                | 담당   | 진척 | 상태       |
+|-------|---------------------|--------|------|------------|
+| 1.0   | 로그인 화면 UI      | 김태양 | 55%  | IN_PROGRESS|
+| 1.1   | 결제 플로우 화면    | 김태양 | 10%  | TODO       |
+| 2.0   | 결제 API 개발       | 정서연 | 85%  | IN_PROGRESS|
+| 2.1   | 사용자 인증 API     | 정서연 | 80%  | BLOCKED    |
+| 3.0   | 통합 테스트         | 미배정 |  0%  | TODO       |
+
+## 주요 리스크
+1. T004 PG사 API 블로커 — 해소 지연 시 T005 연쇄 지연 우려
+2. T001 기획 변경 발생 — 코드 반영 필요
+
+## 다음 달 목표
+- T001, T002 80% 이상 달성
+- T003, T004 완료
+- 통합 테스트 착수""" .
+
+
+# ══════════════════════════════════════════════════════════════════
+#  [BL-02] 신규 프로젝트 등록 → 인력 추천
+#
+#  시나리오: "마케팅 애널리틱스 대시보드" 프로젝트가 신규 등록되었습니다.
+#  시스템이 프로젝트 요구 스킬(React, TypeScript, Python, 데이터 애널리틱스)과
+#  KG의 Person 이력을 매칭하여 최민준을 1순위로 추천합니다.
+#  최민준은 React(0.91), TypeScript(0.87), Python(0.74),
+#  데이터 애널리틱스(0.76) 역량을 보유하고 가용성(0.80)이 가장 높습니다.
+# ══════════════════════════════════════════════════════════════════
+
+inst:recommendation_analytics_minjun
+    a owl:NamedIndividual, pm:StaffingRecommendation ;
+    pm:recommendationId "REC001" ;
+    pm:targetProject inst:project_analytics ;
+    pm:recommendedPerson inst:person_minjun ;
+    pm:similarityScore "0.87"^^xsd:decimal ;
+    pm:recommendationRank "1"^^xsd:integer ;
+    pm:recommendationReason "React(0.91)·TypeScript(0.87)·Python(0.74)·데이터 애널리틱스(0.76) 역량 보유. 가용성 0.80으로 팀 내 최고. 유사 데이터 시각화 프로젝트 수행 이력 있음." ;
+    pm:createdAt "2025-04-07T09:00:00Z"^^xsd:dateTime .
+
+inst:recommendation_analytics_taeyang
+    a owl:NamedIndividual, pm:StaffingRecommendation ;
+    pm:recommendationId "REC002" ;
+    pm:targetProject inst:project_analytics ;
+    pm:recommendedPerson inst:person_taeyang ;
+    pm:similarityScore "0.71"^^xsd:decimal ;
+    pm:recommendationRank "2"^^xsd:integer ;
+    pm:recommendationReason "React(0.91)·TypeScript(0.87) 역량 우수. 단, 현재 페이플로우 v2 투입 중(가용성 0.35)이며 Python·데이터 애널리틱스 역량이 1순위 대비 낮음." ;
+    pm:createdAt "2025-04-07T09:00:01Z"^^xsd:dateTime .
+
+# 인력 추천 알림 — PM에게 전달
+inst:alert_staffing_recommendation
+    a owl:NamedIndividual, pm:Alert ;
+    pm:alertId "ALT003" ;
+    pm:alertType "STAFFING_RECOMMENDATION" ;
+    pm:alertTitle "[인력 추천] 마케팅 애널리틱스 대시보드 — 추천 결과 도착" ;
+    pm:alertBody """박지수 PM님, 신규 프로젝트 인력 추천 결과입니다.
+
+■ 프로젝트: 마케팅 애널리틱스 대시보드
+  · 도메인: 데이터 애널리틱스
+  · 스택: React, TypeScript, Python, PostgreSQL
+  · 난이도: MEDIUM / 시작: 2025-05-01
+
+■ 1순위 추천: 최민준 (유사도 0.87)
+  · React 0.91 · TypeScript 0.87 · Python 0.74 · 데이터 애널리틱스 0.76
+  · 현재 가용성: 0.80 (팀 내 최고)
+  · 투입 가능 시점: 즉시
+
+■ 2순위 추천: 김태양 (유사도 0.71)
+  · React 0.91 · TypeScript 0.87 우수
+  · 현재 페이플로우 v2 진행 중 (가용성 0.35)
+  · 투입 가능 시점: 2025-05 이후 검토 필요
+
+■ 추천 근거
+  단순 가용성이 아닌 과거 수행 Task 유사도(0.87) +
+  역량 점수(CompetencySignal 누적) +
+  협업 시너지(CollaborationSignal)를 종합 산출했습니다.""" ;
+    pm:alertRecipients inst:person_jisoo ;
+    pm:triggeringSignal inst:recommendation_analytics_minjun ;
+    pm:deliveryChannel "IN_APP" ;
+    pm:alertSentAt "2025-04-07T09:00:05Z"^^xsd:dateTime .

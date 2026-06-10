@@ -1,0 +1,729 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix pm:   <https://ontology.example.org/project-management#> .
+@prefix inst: <https://ontology.example.org/instances#> .
+
+# ══════════════════════════════════════════════════════════════════
+#  옴니채널 리테일 운영 플랫폼 고도화 (RETAILOPS001)
+#  ─ 2026 하반기 고도화 사업
+#  ─ 발주사 : ㈜에버그린리테일
+#  ─ 인력   : PM 1 / 기획자 1 / 개발자 1
+#  ─ 통합   : Google Slides 알림 + GitLab CI 연동 (기존 통합 ID 유지)
+# ══════════════════════════════════════════════════════════════════
+
+# ──────────────────────────────────────────────────────────────────
+#  조직 — 수행사
+# ──────────────────────────────────────────────────────────────────
+
+inst:org_RETAILOPS a pm:Organization ;
+    pm:orgId   "ORG_RETAILOPS" ;
+    pm:orgName "Dweax 리테일 사업본부" .
+
+# ──────────────────────────────────────────────────────────────────
+#  프로젝트
+# ──────────────────────────────────────────────────────────────────
+
+inst:project_retailops a pm:Project ;
+    pm:projectId       "RETAILOPS001" ;
+    pm:projectName     "옴니채널 리테일 운영 플랫폼 고도화" ;
+    pm:projectStatus   "ACTIVE" ;
+    pm:projectDomain   "리테일" ;
+    pm:projectTheme    "오프라인 매장과 온라인 채널 통합 운영" ;
+    pm:techStack       "React" ;
+    pm:techStack       "Next.js" ;
+    pm:techStack       "FastAPI" ;
+    pm:techStack       "PostgreSQL" ;
+    pm:techStack       "Redis" ;
+    pm:techStack       "Kafka" ;
+    pm:difficultyLevel "HIGH" ;
+    pm:description     "오프라인 매장과 온라인 채널을 통합한 옴니채널 리테일 운영 플랫폼의 2026년 하반기 고도화 사업. 멀티채널 주문 통합, 실시간 재고 동기화, 매장 운영 대시보드, 멤버십 푸시·이메일 알림 시스템을 단계적으로 개선하여 매장-온라인 간 데이터 일관성과 운영 효율을 끌어올린다." ;
+    pm:startDate       "2026-06-01"^^xsd:date ;
+    pm:endDate         "2026-10-30"^^xsd:date ;
+    pm:projectAmount   "480000000"^^xsd:integer ;
+    pm:budget          "4억 8천만원" ;
+    pm:contractType    "확정금액" ;
+    pm:businessType    "고도화" ;
+    pm:leadCompany     "Dweax" ;
+    pm:clientName      "㈜에버그린리테일" ;
+    pm:googleSlideId   "1lAmfHQSYE1ZkaEnzK1CynBvl6-xrdp5Nwagr4zLsasE" ;
+    pm:gitlabProjectId "7" ;
+    pm:gitlabRepoUrl   "http://dweax.iptime.org:50004/root/alert-test-project"^^xsd:anyURI ;
+    pm:ownedBy         inst:org_RETAILOPS .
+
+# ══════════════════════════════════════════════════════════════════
+#  인력 (4명 유지) — 002_persons.ttl과는 별개의 프로젝트 전용 인스턴스
+# ══════════════════════════════════════════════════════════════════
+
+# ──────────────────────────────────────────────────────────────────
+#  PM — 홍길동
+# ──────────────────────────────────────────────────────────────────
+
+inst:person_TEST_PM a pm:Person ;
+    pm:personId          "TEST_PM" ;
+    pm:personName        "홍길동" ;
+    pm:role              "PM" ;
+    pm:grade             "수석" ;
+    pm:availabilityScore "0.80"^^xsd:decimal ;
+    pm:belongsTo         inst:org_RETAILOPS ;
+    pm:participatesIn    inst:project_retailops ;
+    pm:hasSkill          inst:skill_TEST_PM_1, inst:skill_TEST_PM_2, inst:skill_TEST_PM_3 .
+
+inst:skill_TEST_PM_1 a pm:Skill ;
+    pm:skillName        "프로젝트 관리" ;
+    pm:skillCategory    "SOFT_SKILL" ;
+    pm:proficiencyLevel "0.92"^^xsd:decimal .
+
+inst:skill_TEST_PM_2 a pm:Skill ;
+    pm:skillName        "일정 관리" ;
+    pm:skillCategory    "SOFT_SKILL" ;
+    pm:proficiencyLevel "0.88"^^xsd:decimal .
+
+inst:skill_TEST_PM_3 a pm:Skill ;
+    pm:skillName        "리테일 도메인" ;
+    pm:skillCategory    "DOMAIN" ;
+    pm:proficiencyLevel "0.85"^^xsd:decimal .
+
+# ──────────────────────────────────────────────────────────────────
+#  개발자 1 — 박개발 (백엔드/API)
+# ──────────────────────────────────────────────────────────────────
+
+inst:person_TEST_DEV1 a pm:Person ;
+    pm:personId          "TEST_DEV1" ;
+    pm:personName        "박개발" ;
+    pm:role              "개발자" ;
+    pm:grade             "선임" ;
+    pm:availabilityScore "0.75"^^xsd:decimal ;
+    pm:belongsTo         inst:org_RETAILOPS ;
+    pm:participatesIn    inst:project_retailops ;
+    pm:hasSkill          inst:skill_TEST_DEV1_1, inst:skill_TEST_DEV1_2, inst:skill_TEST_DEV1_3 .
+
+inst:skill_TEST_DEV1_1 a pm:Skill ;
+    pm:skillName        "FastAPI" ;
+    pm:skillCategory    "TECHNICAL" ;
+    pm:proficiencyLevel "0.88"^^xsd:decimal .
+
+inst:skill_TEST_DEV1_2 a pm:Skill ;
+    pm:skillName        "PostgreSQL" ;
+    pm:skillCategory    "TECHNICAL" ;
+    pm:proficiencyLevel "0.85"^^xsd:decimal .
+
+inst:skill_TEST_DEV1_3 a pm:Skill ;
+    pm:skillName        "Kafka" ;
+    pm:skillCategory    "TECHNICAL" ;
+    pm:proficiencyLevel "0.78"^^xsd:decimal .
+
+# ──────────────────────────────────────────────────────────────────
+#  기획자 — 이기획
+# ──────────────────────────────────────────────────────────────────
+
+inst:person_TEST_PL a pm:Person ;
+    pm:personId          "TEST_PL" ;
+    pm:personName        "이기획" ;
+    pm:role              "기획자" ;
+    pm:grade             "선임" ;
+    pm:availabilityScore "0.90"^^xsd:decimal ;
+    pm:belongsTo         inst:org_RETAILOPS ;
+    pm:participatesIn    inst:project_retailops ;
+    pm:hasSkill          inst:skill_TEST_PL_1, inst:skill_TEST_PL_2, inst:skill_TEST_PL_3 .
+
+inst:skill_TEST_PL_1 a pm:Skill ;
+    pm:skillName        "UX 기획" ;
+    pm:skillCategory    "DOMAIN" ;
+    pm:proficiencyLevel "0.90"^^xsd:decimal .
+
+inst:skill_TEST_PL_2 a pm:Skill ;
+    pm:skillName        "요구사항 분석" ;
+    pm:skillCategory    "SOFT_SKILL" ;
+    pm:proficiencyLevel "0.88"^^xsd:decimal .
+
+inst:skill_TEST_PL_3 a pm:Skill ;
+    pm:skillName        "화면 정의서" ;
+    pm:skillCategory    "DOMAIN" ;
+    pm:proficiencyLevel "0.85"^^xsd:decimal .
+
+# ══════════════════════════════════════════════════════════════════
+#  역할별 필요 인원 (RequiredRole)
+# ══════════════════════════════════════════════════════════════════
+
+inst:reqrole_retailops_pm a pm:RequiredRole ;
+    pm:roleName          "PM" ;
+    pm:requiredCount     "1"^^xsd:integer ;
+    pm:requiredMM        "5.0"^^xsd:decimal ;
+    pm:requiredTotalDays "110.0"^^xsd:decimal ;
+    pm:requiredTotalHours "880.0"^^xsd:decimal ;
+    pm:requiredTaskCount "1"^^xsd:integer ;
+    pm:requiredSkill     "프로젝트 관리" ;
+    pm:requiredSkill     "리테일 도메인" .
+
+inst:reqrole_retailops_pl a pm:RequiredRole ;
+    pm:roleName          "기획자" ;
+    pm:requiredCount     "1"^^xsd:integer ;
+    pm:requiredMM        "1.1"^^xsd:decimal ;
+    pm:requiredTotalDays "25.0"^^xsd:decimal ;
+    pm:requiredTotalHours "200.0"^^xsd:decimal ;
+    pm:requiredTaskCount "5"^^xsd:integer ;
+    pm:requiredSkill     "UX 기획" ;
+    pm:requiredSkill     "요구사항 분석" .
+
+inst:reqrole_retailops_dev a pm:RequiredRole ;
+    pm:roleName          "개발자" ;
+    pm:requiredCount     "1"^^xsd:integer ;
+    pm:requiredMM        "8.0"^^xsd:decimal ;
+    pm:requiredTotalDays "176.0"^^xsd:decimal ;
+    pm:requiredTotalHours "1408.0"^^xsd:decimal ;
+    pm:requiredTaskCount "11"^^xsd:integer ;
+    pm:requiredSkill     "FastAPI" ;
+    pm:requiredSkill     "PostgreSQL" ;
+    pm:requiredSkill     "Kafka" ;
+    pm:requiredSkill     "React" ;
+    pm:requiredSkill     "Next.js" .
+
+inst:project_retailops pm:requiresRole
+    inst:reqrole_retailops_pm,
+    inst:reqrole_retailops_pl,
+    inst:reqrole_retailops_dev .
+
+# ══════════════════════════════════════════════════════════════════
+#  요구사항 — 대분류(REQ-XXX) + 중분류(REQ-XXX-YYY)
+# ══════════════════════════════════════════════════════════════════
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-001 주문 통합 (대분류)
+# ──────────────────────────────────────────────────────────────────
+
+inst:req_RETAILOPS_R001 a pm:Requirement ;
+    pm:requirementId          "REQ-001" ;
+    pm:requirementName        "주문 통합" ;
+    pm:requirementDescription "온라인몰·자사앱·매장 POS 등 모든 채널의 주문을 단일 백오피스에서 조회·관리할 수 있도록 통합한다." ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "HIGH" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "운영자" ;
+    pm:relatedToProject       inst:project_retailops .
+
+inst:req_RETAILOPS_R001_001 a pm:Requirement ;
+    pm:requirementId          "REQ-001-001" ;
+    pm:requirementName        "멀티채널 주문 동기화" ;
+    pm:requirementDescription "온라인·매장 주문을 Kafka 기반 이벤트 큐로 수집, 중복 제거 후 백오피스 DB에 동기화" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "HIGH" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "운영자" ;
+    pm:relatedToProject       inst:project_retailops .
+
+inst:req_RETAILOPS_R001_002 a pm:Requirement ;
+    pm:requirementId          "REQ-001-002" ;
+    pm:requirementName        "주문 상태 추적" ;
+    pm:requirementDescription "결제→출고→배송→완료 전 흐름의 상태 추적 화면. 매장·고객·운영자가 각자 다른 뷰로 조회" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "HIGH" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "운영자" ;
+    pm:userType               "고객" ;
+    pm:relatedToProject       inst:project_retailops .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-002 재고 관리 (대분류)
+# ──────────────────────────────────────────────────────────────────
+
+inst:req_RETAILOPS_R002 a pm:Requirement ;
+    pm:requirementId          "REQ-002" ;
+    pm:requirementName        "재고 관리" ;
+    pm:requirementDescription "매장-온라인 간 실시간 재고를 일관되게 유지. 부정합 발생 시 자동 보정·알림" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "HIGH" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "운영자" ;
+    pm:relatedToProject       inst:project_retailops .
+
+inst:req_RETAILOPS_R002_001 a pm:Requirement ;
+    pm:requirementId          "REQ-002-001" ;
+    pm:requirementName        "실시간 재고 동기화" ;
+    pm:requirementDescription "Redis 캐시 + PostgreSQL 트랜잭션 조합으로 매장·온라인 재고를 5초 이내 동기화. 충돌 시 보상 트랜잭션 적용" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "HIGH" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "운영자" ;
+    pm:relatedToProject       inst:project_retailops .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-003 운영 대시보드 (대분류)
+# ──────────────────────────────────────────────────────────────────
+
+inst:req_RETAILOPS_R003 a pm:Requirement ;
+    pm:requirementId          "REQ-003" ;
+    pm:requirementName        "운영 대시보드" ;
+    pm:requirementDescription "매장별 매출·방문객·재고회전을 한 화면에 시각화. 본부와 매장장이 같은 뷰로 의사결정" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "MEDIUM" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "운영자" ;
+    pm:userType               "매장장" ;
+    pm:relatedToProject       inst:project_retailops .
+
+inst:req_RETAILOPS_R003_001 a pm:Requirement ;
+    pm:requirementId          "REQ-003-001" ;
+    pm:requirementName        "매출·방문객 통합 지표" ;
+    pm:requirementDescription "전일 매출, 시간대별 방문객, 재고 회전율 등 운영 KPI를 카드+차트로 표시" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "MEDIUM" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "운영자" ;
+    pm:userType               "매장장" ;
+    pm:relatedToProject       inst:project_retailops .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-004 멤버십 알림 (대분류) — Slides 웹훅 트리거 시나리오
+# ──────────────────────────────────────────────────────────────────
+
+inst:req_RETAILOPS_R004 a pm:Requirement ;
+    pm:requirementId          "REQ-004" ;
+    pm:requirementName        "멤버십 알림" ;
+    pm:requirementDescription "회원 등급별 프로모션·재입고·포인트 만료 등을 푸시·이메일로 발송하는 알림 시스템" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "MEDIUM" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "고객" ;
+    pm:relatedToProject       inst:project_retailops .
+
+inst:req_RETAILOPS_R004_001 a pm:Requirement ;
+    pm:requirementId          "REQ-004-001" ;
+    pm:requirementName        "푸시·이메일 발송" ;
+    pm:requirementDescription "이벤트 트리거 기반 알림 발송 API + 어댑터 (FCM, SES). 발송 결과·열람률 집계 포함" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "MEDIUM" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "고객" ;
+    pm:relatedToProject       inst:project_retailops .
+
+# ══════════════════════════════════════════════════════════════════
+#  WBS 태스크
+#  wbsCode 규약 : <대분류>.<중분류>.<역할>.<순번>  (예: 1.1.PL.1)
+#  의존성: 기획(PL) → 개발(DEV) → 통합 안정화
+# ══════════════════════════════════════════════════════════════════
+
+# ──────────────────────────────────────────────────────────────────
+#  0.PM.1 — 프로젝트 관리 (전체 기간, 진행 중)
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_retailops_pm1 a pm:Task ;
+    pm:taskId                "RETAILOPS001-T001" ;
+    pm:wbsCode               "0.PM.1" ;
+    pm:taskName              "프로젝트 관리" ;
+    pm:taskDescription       "킥오프, 주간보고, 일정·리스크 관리, 발주사 커뮤니케이션, 산출물 검수" ;
+    pm:taskStatus            "진행" ;
+    pm:progressPercent       35 ;
+    pm:plannedStart          "2026-06-01"^^xsd:date ;
+    pm:dueDate               "2026-10-30"^^xsd:date ;
+    pm:plannedHours          "880.0"^^xsd:decimal ;
+    pm:estimatedDays         "110.0"^^xsd:decimal ;
+    pm:deliverable           "킥오프 자료" ;
+    pm:deliverable           "주간 보고서" ;
+    pm:deliverable           "최종 종료 보고서" ;
+    pm:assignedTo            inst:person_TEST_PM ;
+    pm:assigneeRole          "PM" ;
+    pm:phase                 "foundation" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "low" .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-001-001 멀티채널 주문 동기화 — 기획 1 + 개발 2
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_retailops_order_pl a pm:Task ;
+    pm:taskId                "RETAILOPS001-T002" ;
+    pm:wbsCode               "1.1.PL.1" ;
+    pm:taskName              "주문 통합 화면 정의서" ;
+    pm:taskDescription       "백오피스 주문 통합 화면 정의서 — 리스트·상세·필터·일괄 처리 흐름" ;
+    pm:taskStatus            "완료" ;
+    pm:progressPercent       100 ;
+    pm:plannedStart          "2026-06-01"^^xsd:date ;
+    pm:dueDate               "2026-06-05"^^xsd:date ;
+    pm:plannedHours          "40.0"^^xsd:decimal ;
+    pm:estimatedDays         "5.0"^^xsd:decimal ;
+    pm:deliverable           "주문 통합 화면 정의서" ;
+    pm:assignedTo            inst:person_TEST_PL ;
+    pm:assigneeRole          "기획자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R001_001 ;
+    pm:phase                 "foundation" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "low" .
+
+inst:task_retailops_order_dev1 a pm:Task ;
+    pm:taskId                "RETAILOPS001-T003" ;
+    pm:wbsCode               "1.1.DEV.1" ;
+    pm:taskName              "멀티채널 주문 API 게이트웨이" ;
+    pm:taskDescription       "온라인몰·자사앱·POS의 주문 API를 단일 게이트웨이로 추상화. 인증·rate-limit·재시도 정책 포함" ;
+    pm:taskStatus            "진행" ;
+    pm:progressPercent       40 ;
+    pm:plannedStart          "2026-06-29"^^xsd:date ;
+    pm:dueDate               "2026-07-10"^^xsd:date ;
+    pm:plannedHours          "80.0"^^xsd:decimal ;
+    pm:estimatedDays         "10.0"^^xsd:decimal ;
+    pm:deliverable           "주문 게이트웨이 API 명세" ;
+    pm:deliverable           "구현 코드 + 단위 테스트" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R001_001 ;
+    pm:dependsOn             inst:task_retailops_order_pl ;
+    pm:phase                 "core" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "high" .
+
+inst:task_retailops_order_dev2 a pm:Task ;
+    pm:taskId                "RETAILOPS001-T004" ;
+    pm:wbsCode               "1.1.DEV.2" ;
+    pm:taskName              "주문 큐 처리 워커" ;
+    pm:taskDescription       "Kafka 주문 이벤트를 소비해 중복 제거 후 DB에 적재하는 워커. 백오피스 SSE로 실시간 푸시" ;
+    pm:taskStatus            "진행" ;
+    pm:progressPercent       25 ;
+    pm:plannedStart          "2026-06-29"^^xsd:date ;
+    pm:dueDate               "2026-07-10"^^xsd:date ;
+    pm:plannedHours          "80.0"^^xsd:decimal ;
+    pm:estimatedDays         "10.0"^^xsd:decimal ;
+    pm:deliverable           "주문 워커 소스" ;
+    pm:deliverable           "운영 매뉴얼" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R001_001 ;
+    pm:dependsOn             inst:task_retailops_order_pl ;
+    pm:phase                 "core" ;
+    pm:criticality           "core" ;
+    pm:risk                  "high" .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-001-002 주문 상태 추적 — 기획 1 + 개발 2
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_retailops_orderstatus_pl a pm:Task ;
+    pm:taskId                "RETAILOPS001-T005" ;
+    pm:wbsCode               "1.2.PL.1" ;
+    pm:taskName              "주문 상태 흐름도 설계" ;
+    pm:taskDescription       "결제→출고→배송→완료 상태 전이도와 사용자 역할별 뷰 정의" ;
+    pm:taskStatus            "완료" ;
+    pm:progressPercent       100 ;
+    pm:plannedStart          "2026-06-08"^^xsd:date ;
+    pm:dueDate               "2026-06-10"^^xsd:date ;
+    pm:plannedHours          "24.0"^^xsd:decimal ;
+    pm:estimatedDays         "3.0"^^xsd:decimal ;
+    pm:deliverable           "주문 상태 흐름도" ;
+    pm:deliverable           "역할별 뷰 정의서" ;
+    pm:assignedTo            inst:person_TEST_PL ;
+    pm:assigneeRole          "기획자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R001_002 ;
+    pm:phase                 "foundation" ;
+    pm:criticality           "core" ;
+    pm:risk                  "low" .
+
+inst:task_retailops_orderstatus_dev1 a pm:Task ;
+    pm:taskId                "RETAILOPS001-T006" ;
+    pm:wbsCode               "1.2.DEV.1" ;
+    pm:taskName              "주문 상태 추적 API" ;
+    pm:taskDescription       "역할별 가시성 정책이 적용된 주문 상태 조회·전이 API" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-07-13"^^xsd:date ;
+    pm:dueDate               "2026-07-17"^^xsd:date ;
+    pm:plannedHours          "40.0"^^xsd:decimal ;
+    pm:estimatedDays         "5.0"^^xsd:decimal ;
+    pm:deliverable           "상태 추적 API + 명세" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R001_002 ;
+    pm:dependsOn             inst:task_retailops_orderstatus_pl ;
+    pm:dependsOn             inst:task_retailops_order_dev1 ;
+    pm:phase                 "core" ;
+    pm:criticality           "core" ;
+    pm:risk                  "low" .
+
+inst:task_retailops_orderstatus_dev2 a pm:Task ;
+    pm:taskId                "RETAILOPS001-T007" ;
+    pm:wbsCode               "1.2.DEV.2" ;
+    pm:taskName              "주문 상태 추적 화면 구현" ;
+    pm:taskDescription       "Next.js 기반 주문 상태 추적 뷰 (운영자·매장·고객 3분기 뷰)" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-07-13"^^xsd:date ;
+    pm:dueDate               "2026-07-17"^^xsd:date ;
+    pm:plannedHours          "40.0"^^xsd:decimal ;
+    pm:estimatedDays         "5.0"^^xsd:decimal ;
+    pm:deliverable           "주문 상태 추적 화면" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R001_002 ;
+    pm:dependsOn             inst:task_retailops_orderstatus_pl ;
+    pm:phase                 "core" ;
+    pm:criticality           "core" ;
+    pm:risk                  "low" .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-002-001 실시간 재고 동기화 — 기획 1 + 개발 2
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_retailops_inventory_pl a pm:Task ;
+    pm:taskId                "RETAILOPS001-T008" ;
+    pm:wbsCode               "2.1.PL.1" ;
+    pm:taskName              "재고 화면 와이어프레임" ;
+    pm:taskDescription       "실시간 재고 보드, 부정합 경고 UX, 자동 보정 토글" ;
+    pm:taskStatus            "진행" ;
+    pm:progressPercent       70 ;
+    pm:plannedStart          "2026-06-11"^^xsd:date ;
+    pm:dueDate               "2026-06-15"^^xsd:date ;
+    pm:plannedHours          "32.0"^^xsd:decimal ;
+    pm:estimatedDays         "4.0"^^xsd:decimal ;
+    pm:deliverable           "재고 화면 와이어프레임" ;
+    pm:assignedTo            inst:person_TEST_PL ;
+    pm:assigneeRole          "기획자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R002_001 ;
+    pm:phase                 "foundation" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "low" .
+
+inst:task_retailops_inventory_dev1 a pm:Task ;
+    pm:taskId                "RETAILOPS001-T009" ;
+    pm:wbsCode               "2.1.DEV.1" ;
+    pm:taskName              "재고 충돌 해결 로직" ;
+    pm:taskDescription       "동시 주문·매장 판매 충돌 시 보상 트랜잭션 — 락 전략, 재시도, 롤백 로그" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-07-20"^^xsd:date ;
+    pm:dueDate               "2026-07-31"^^xsd:date ;
+    pm:plannedHours          "80.0"^^xsd:decimal ;
+    pm:estimatedDays         "10.0"^^xsd:decimal ;
+    pm:deliverable           "충돌 해결 모듈 코드" ;
+    pm:deliverable           "장애 시나리오 테스트 결과서" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R002_001 ;
+    pm:dependsOn             inst:task_retailops_inventory_pl ;
+    pm:dependsOn             inst:task_retailops_orderstatus_dev1 ;
+    pm:phase                 "core" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "high" .
+
+inst:task_retailops_inventory_dev2 a pm:Task ;
+    pm:taskId                "RETAILOPS001-T010" ;
+    pm:wbsCode               "2.1.DEV.2" ;
+    pm:taskName              "재고 동기화 모듈 구현" ;
+    pm:taskDescription       "Redis 캐시 + PostgreSQL 트랜잭션 조합으로 5초 SLO 보장하는 동기화 모듈" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-07-13"^^xsd:date ;
+    pm:dueDate               "2026-07-24"^^xsd:date ;
+    pm:plannedHours          "80.0"^^xsd:decimal ;
+    pm:estimatedDays         "10.0"^^xsd:decimal ;
+    pm:deliverable           "재고 동기화 모듈" ;
+    pm:deliverable           "성능 측정 리포트" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R002_001 ;
+    pm:dependsOn             inst:task_retailops_inventory_pl ;
+    pm:phase                 "core" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "high" .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-003-001 매출·방문객 통합 지표 — 기획 1 + 개발 2
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_retailops_dashboard_pl a pm:Task ;
+    pm:taskId                "RETAILOPS001-T011" ;
+    pm:wbsCode               "3.1.PL.1" ;
+    pm:taskName              "운영 대시보드 와이어프레임" ;
+    pm:taskDescription       "KPI 카드 배치, 시간대별 차트, 매장 비교 뷰 와이어프레임" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-06-16"^^xsd:date ;
+    pm:dueDate               "2026-06-22"^^xsd:date ;
+    pm:plannedHours          "40.0"^^xsd:decimal ;
+    pm:estimatedDays         "5.0"^^xsd:decimal ;
+    pm:deliverable           "대시보드 와이어프레임" ;
+    pm:deliverable           "KPI 정의서" ;
+    pm:assignedTo            inst:person_TEST_PL ;
+    pm:assigneeRole          "기획자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R003_001 ;
+    pm:phase                 "foundation" ;
+    pm:criticality           "core" ;
+    pm:risk                  "low" .
+
+inst:task_retailops_dashboard_dev1 a pm:Task ;
+    pm:taskId                "RETAILOPS001-T012" ;
+    pm:wbsCode               "3.1.DEV.1" ;
+    pm:taskName              "운영 대시보드 화면 구현" ;
+    pm:taskDescription       "Next.js + Recharts로 KPI 카드, 시간대 차트, 매장 비교 뷰 구현" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-08-03"^^xsd:date ;
+    pm:dueDate               "2026-08-14"^^xsd:date ;
+    pm:plannedHours          "80.0"^^xsd:decimal ;
+    pm:estimatedDays         "10.0"^^xsd:decimal ;
+    pm:deliverable           "대시보드 화면" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R003_001 ;
+    pm:dependsOn             inst:task_retailops_dashboard_pl ;
+    pm:dependsOn             inst:task_retailops_inventory_dev1 ;
+    pm:phase                 "feature" ;
+    pm:criticality           "core" ;
+    pm:risk                  "low" .
+
+inst:task_retailops_dashboard_dev2 a pm:Task ;
+    pm:taskId                "RETAILOPS001-T013" ;
+    pm:wbsCode               "3.1.DEV.2" ;
+    pm:taskName              "KPI 집계 ETL 파이프라인" ;
+    pm:taskDescription       "주문·재고·매장 원장 데이터를 시간 단위로 집계해 대시보드 데이터 마트 적재" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-07-27"^^xsd:date ;
+    pm:dueDate               "2026-08-14"^^xsd:date ;
+    pm:plannedHours          "120.0"^^xsd:decimal ;
+    pm:estimatedDays         "15.0"^^xsd:decimal ;
+    pm:deliverable           "ETL 파이프라인 코드" ;
+    pm:deliverable           "스케줄 운영 매뉴얼" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R003_001 ;
+    pm:dependsOn             inst:task_retailops_dashboard_pl ;
+    pm:dependsOn             inst:task_retailops_inventory_dev2 ;
+    pm:phase                 "feature" ;
+    pm:criticality           "core" ;
+    pm:risk                  "low" .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-004-001 푸시·이메일 발송 — 기획 1 + 개발 2
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_retailops_notify_pl a pm:Task ;
+    pm:taskId                "RETAILOPS001-T014" ;
+    pm:wbsCode               "4.1.PL.1" ;
+    pm:taskName              "알림 템플릿·발송 정책 설계" ;
+    pm:taskDescription       "회원 등급별 알림 케이던스, 템플릿 카탈로그, 발송 제한 정책" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-06-23"^^xsd:date ;
+    pm:dueDate               "2026-06-26"^^xsd:date ;
+    pm:plannedHours          "32.0"^^xsd:decimal ;
+    pm:estimatedDays         "4.0"^^xsd:decimal ;
+    pm:deliverable           "알림 템플릿 카탈로그" ;
+    pm:deliverable           "발송 정책 문서" ;
+    pm:assignedTo            inst:person_TEST_PL ;
+    pm:assigneeRole          "기획자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R004_001 ;
+    pm:phase                 "foundation" ;
+    pm:criticality           "normal" ;
+    pm:risk                  "low" .
+
+inst:task_retailops_notify_dev1 a pm:Task ;
+    pm:taskId                "RETAILOPS001-T015" ;
+    pm:wbsCode               "4.1.DEV.1" ;
+    pm:taskName              "알림 발송 API + 큐" ;
+    pm:taskDescription       "이벤트 트리거 기반 알림 발송 API, Kafka 큐 적재, 재시도 정책" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-08-17"^^xsd:date ;
+    pm:dueDate               "2026-08-28"^^xsd:date ;
+    pm:plannedHours          "80.0"^^xsd:decimal ;
+    pm:estimatedDays         "10.0"^^xsd:decimal ;
+    pm:deliverable           "알림 발송 API" ;
+    pm:deliverable           "재시도 정책 문서" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R004_001 ;
+    pm:dependsOn             inst:task_retailops_notify_pl ;
+    pm:dependsOn             inst:task_retailops_dashboard_dev1 ;
+    pm:phase                 "feature" ;
+    pm:criticality           "normal" ;
+    pm:risk                  "low" .
+
+inst:task_retailops_notify_dev2 a pm:Task ;
+    pm:taskId                "RETAILOPS001-T016" ;
+    pm:wbsCode               "4.1.DEV.2" ;
+    pm:taskName              "FCM·SES 발송 어댑터" ;
+    pm:taskDescription       "FCM(푸시)·SES(이메일) 어댑터, 발송 결과 콜백 처리, 열람률 집계" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-08-17"^^xsd:date ;
+    pm:dueDate               "2026-08-28"^^xsd:date ;
+    pm:plannedHours          "80.0"^^xsd:decimal ;
+    pm:estimatedDays         "10.0"^^xsd:decimal ;
+    pm:deliverable           "FCM·SES 어댑터 코드" ;
+    pm:deliverable           "발송 결과 통계 화면" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_RETAILOPS_R004_001 ;
+    pm:dependsOn             inst:task_retailops_notify_pl ;
+    pm:dependsOn             inst:task_retailops_dashboard_dev2 ;
+    pm:phase                 "feature" ;
+    pm:criticality           "normal" ;
+    pm:risk                  "low" .
+
+# ──────────────────────────────────────────────────────────────────
+#  통합 안정화 (closing)
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_retailops_integration a pm:Task ;
+    pm:taskId                "RETAILOPS001-T017" ;
+    pm:wbsCode               "5.1.DEV.1" ;
+    pm:taskName              "통합 테스트 및 안정화" ;
+    pm:taskDescription       "주문-재고-알림 전 시나리오 통합 테스트, 부하·장애 시나리오, 회귀 검증" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-08-31"^^xsd:date ;
+    pm:dueDate               "2026-09-30"^^xsd:date ;
+    pm:plannedHours          "176.0"^^xsd:decimal ;
+    pm:estimatedDays         "22.0"^^xsd:decimal ;
+    pm:deliverable           "통합 테스트 결과서" ;
+    pm:deliverable           "성능 측정 보고서" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:dependsOn             inst:task_retailops_notify_dev1 ;
+    pm:dependsOn             inst:task_retailops_notify_dev2 ;
+    pm:phase                 "closing" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "low" .
+
+inst:task_retailops_release a pm:Task ;
+    pm:taskId                "RETAILOPS001-T018" ;
+    pm:wbsCode               "5.2.DEV.1" ;
+    pm:taskName              "배포 및 운영 이관" ;
+    pm:taskDescription       "프로덕션 배포, 모니터링 셋업, 운영 매뉴얼 작성, 발주사 교육" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-10-01"^^xsd:date ;
+    pm:dueDate               "2026-10-30"^^xsd:date ;
+    pm:plannedHours          "176.0"^^xsd:decimal ;
+    pm:estimatedDays         "22.0"^^xsd:decimal ;
+    pm:deliverable           "배포 가이드" ;
+    pm:deliverable           "운영 매뉴얼" ;
+    pm:deliverable           "교육 자료" ;
+    pm:assignedTo            inst:person_TEST_DEV1 ;
+    pm:assigneeRole          "개발자" ;
+    pm:dependsOn             inst:task_retailops_integration ;
+    pm:phase                 "closing" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "low" .
+
+# ──────────────────────────────────────────────────────────────────
+#  프로젝트 → 태스크 연결
+# ──────────────────────────────────────────────────────────────────
+
+inst:project_retailops pm:hasTask
+    inst:task_retailops_pm1,
+    inst:task_retailops_order_pl,
+    inst:task_retailops_order_dev1,
+    inst:task_retailops_order_dev2,
+    inst:task_retailops_orderstatus_pl,
+    inst:task_retailops_orderstatus_dev1,
+    inst:task_retailops_orderstatus_dev2,
+    inst:task_retailops_inventory_pl,
+    inst:task_retailops_inventory_dev1,
+    inst:task_retailops_inventory_dev2,
+    inst:task_retailops_dashboard_pl,
+    inst:task_retailops_dashboard_dev1,
+    inst:task_retailops_dashboard_dev2,
+    inst:task_retailops_notify_pl,
+    inst:task_retailops_notify_dev1,
+    inst:task_retailops_notify_dev2,
+    inst:task_retailops_integration,
+    inst:task_retailops_release .

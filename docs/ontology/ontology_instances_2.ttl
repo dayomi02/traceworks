@@ -1,0 +1,62 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix pm:   <https://ontology.example.org/project-management#> .
+@prefix inst: <https://ontology.example.org/instances#> .
+
+# ══════════════════════════════════════════════════════════════════
+#  테스트 시나리오 개요
+#
+#  회사: (주)넥스트웨이브 — 핀테크 스타트업
+#  프로젝트: "페이플로우 v2" 모바일 간편결제 앱 리뉴얼 (진행 중)
+#             "마케팅 애널리틱스 대시보드" (신규 등록 → 인력 추천 트리거)
+#
+#  검증 가능한 비즈니스 로직:
+#  [BL-01] 기획자가 Figma 화면 수정 → 담당 개발자에게 맥락 알림
+#  [BL-02] 새 프로젝트 등록 → 과거 이력·역량·협업 시너지 기반 인력 추천
+#  [BL-03] GitHub 커밋 → WBS Task 진척률 자동 갱신
+#  [BL-04] Slack 블로커 메시지 → IssueSignal 생성 → 관련자 긴급 알림
+#  [BL-05] 업무 이력 누적 → CompetencySignal → 커리어 그래프 갱신
+#  [BL-06] 협업 이벤트 누적 → CollaborationSignal → 시너지 점수 계산
+#  [BL-07] ProgressSignal 집계 → WBSSnapshot → 주간 보고서 자동 생성
+# ══════════════════════════════════════════════════════════════════
+
+# ──────────────────────────────────────────────────────────────────
+#  역량 (Skill)
+#  실무자들이 보유한 기술·도메인·소프트 스킬 목록입니다.
+# ──────────────────────────────────────────────────────────────────
+
+inst:skill_deep_learning
+    a owl:NamedIndividual, pm:Skill ;
+    pm:skillId "SK013" ;
+    pm:skillName "딥러닝" ;
+    pm:skillCategory "TECHNICAL" ;
+    pm:proficiencyLevel "0.83"^^xsd:decimal ;
+    pm:skillEvidenceCount "52"^^xsd:integer .
+
+# ──────────────────────────────────────────────────────────────────
+#  실무자 (Person) — 5명의 페르소나
+#
+#  박지수 (PM)        — 프로젝트 전체를 조율, 보고서 주요 수신자
+#  이하은 (기획자)    — Figma 화면 설계 담당, BL-01 트리거 주체
+#  김태양 (FE 개발자) — 로그인·결제 화면 담당, BL-01 알림 수신자
+#  정서연 (BE 개발자) — API·DB 담당, BL-03 커밋 주체
+#  최민준 (FE 개발자) — 신규 분석 대시보드 후보, BL-02 추천 대상
+#  홍길동 (데이터 분석 전문가)
+# ──────────────────────────────────────────────────────────────────
+
+inst:person_jildong
+    a owl:NamedIndividual, pm:Person ;
+    pm:personId "P006" ;
+    pm:personName "홍길동" ;
+    pm:email "gildong.hong@nextwave.io" ;
+    pm:role "데이터 분석 전문가" ;
+    pm:slackUserId "SLACK_U006" ;
+    pm:notionUserId "NOTION_U006" ;
+    pm:availabilityScore "0.0"^^xsd:decimal ;
+    pm:belongsTo inst:org_dev_team ;
+    pm:hasSkill inst:skill_data_analytics ;
+    pm:hasSkill inst:skill_python ;
+    pm:hasSkill inst:skill_deep_learning ;
+    pm:hasSkill inst:skill_fintech_domain .

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>RFP 분석 결과 뷰어</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo",
+                 "Noto Sans KR", sans-serif;
+    background: #f3f4f6; color: #1f2937; line-height: 1.5;
+  }
+  header {
+    background: #1e293b; color: white; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 18px; font-weight: 600; }
+  header .meta { font-size: 13px; opacity: 0.7; }
+
+  /* Loader */
+  #loader {
+    max-width: 800px; margin: 80px auto; padding: 32px;
+    background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  #loader h2 { font-size: 20px; margin-bottom: 16px; }
+  #loader p { color: #6b7280; margin-bottom: 24px; font-size: 14px; }
+  #drop-zone {
+    border: 2px dashed #cbd5e1; border-radius: 8px;
+    padding: 40px; text-align: center; cursor: pointer;
+    transition: all 0.2s;
+  }
+  #drop-zone:hover, #drop-zone.dragover { border-color: #3b82f6; background: #eff6ff; }
+  #drop-zone .icon { font-size: 32px; color: #94a3b8; margin-bottom: 8px; }
+  #drop-zone p { margin: 4px 0; color: #475569; }
+  #drop-zone .hint { font-size: 12px; color: #94a3b8; }
+  .divider { text-align: center; margin: 24px 0; color: #9ca3af; font-size: 13px; }
+  .divider::before, .divider::after {
+    content: ""; display: inline-block; width: 40%; height: 1px; background: #e5e7eb;
+    vertical-align: middle; margin: 0 8px;
+  }
+  #json-input {
+    width: 100%; min-height: 120px; padding: 12px;
+    border: 1px solid #d1d5db; border-radius: 6px; font-family: monospace;
+    font-size: 12px; resize: vertical;
+  }
+  #parse-btn {
+    margin-top: 12px; padding: 10px 20px; background: #3b82f6; color: white;
+    border: none; border-radius: 6px; font-size: 14px; cursor: pointer;
+  }
+  #parse-btn:hover { background: #2563eb; }
+  #error { color: #dc2626; margin-top: 12px; font-size: 13px; }
+
+  /* Dashboard */
+  #dashboard { display: none; }
+  .container {
+    display: grid; grid-template-columns: 320px 1fr;
+    gap: 16px; padding: 16px; max-width: 1600px; margin: 0 auto;
+  }
+  aside { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 16px; align-self: start; max-height: calc(100vh - 100px); overflow-y: auto; }
+  .card {
+    background: white; border-radius: 10px; padding: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .card h3 { font-size: 13px; color: #6b7280; text-transform: uppercase;
+             letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600; }
+  .card .field { margin-bottom: 8px; font-size: 13px; }
+  .card .field .label { color: #9ca3af; font-size: 11px; }
+  .card .field .value { color: #1f2937; font-weight: 500; word-break: break-word; }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-tile {
+    background: #f8fafc; border-radius: 6px; padding: 10px;
+    text-align: center;
+  }
+  .stat-tile .num { font-size: 22px; font-weight: 700; color: #1e40af; }
+  .stat-tile .label { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+  main { background: white; border-radius: 10px; padding: 20px;
+         box-shadow: 0 1px 2px rgba(0,0,0,0.05); min-height: 400px; }
+
+  .toolbar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .toolbar input, .toolbar select {
+    padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;
+    font-size: 13px; outline: none;
+  }
+  .toolbar input { flex: 1; min-width: 200px; }
+  .toolbar input:focus, .toolbar select:focus { border-color: #3b82f6; }
+  .toolbar button {
+    padding: 8px 12px; background: #f3f4f6; border: 1px solid #d1d5db;
+    border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .toolbar button:hover { background: #e5e7eb; }
+
+  /* Requirement tree */
+  .req-large {
+    border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .req-large.hidden { display: none; }
+  .req-header {
+    background: #f9fafb; padding: 14px 16px; cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .req-header:hover { background: #f3f4f6; }
+  .req-header .toggle { font-size: 11px; color: #6b7280; width: 12px; transition: transform 0.15s; }
+  .req-large.collapsed .req-header { border-bottom: none; }
+  .req-large.collapsed .toggle { transform: rotate(-90deg); }
+  .req-large.collapsed .req-body { display: none; }
+  .req-id-badge {
+    background: #1e40af; color: white; padding: 3px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 600; font-family: monospace;
+  }
+  .req-name { font-weight: 600; color: #111827; flex: 1; font-size: 14px; }
+  .req-counts { font-size: 12px; color: #6b7280; }
+  .req-body { padding: 14px 16px; background: white; }
+
+  .req-meta {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;
+  }
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 500;
+  }
+  .badge-type-기능 { background: #d1fae5; color: #065f46; }
+  .badge-type-비기능 { background: #fef3c7; color: #92400e; }
+  .badge-assignee-PM { background: #ede9fe; color: #5b21b6; }
+  .badge-assignee-기획 { background: #ccfbf1; color: #115e59; }
+  .badge-assignee-개발-화면 { background: #dbeafe; color: #1e40af; }
+  .badge-assignee-개발-비화면 { background: #e0e7ff; color: #3730a3; }
+  .badge-user-사용자 { background: #cffafe; color: #155e75; }
+  .badge-user-관리자 { background: #fce7f3; color: #9d174d; }
+  .badge-default { background: #f3f4f6; color: #374151; }
+
+  .req-desc { font-size: 13px; color: #4b5563; margin-bottom: 12px; line-height: 1.6; }
+  .req-notes {
+    font-size: 12px; color: #6b7280; background: #f9fafb;
+    padding: 6px 10px; border-radius: 4px; margin-top: 8px;
+    border-left: 3px solid #cbd5e1;
+  }
+
+  .mid-list { margin-top: 12px; padding-left: 8px; border-left: 2px solid #e5e7eb; }
+  .req-mid {
+    margin-bottom: 14px; padding: 12px; background: #fafafa; border-radius: 6px;
+  }
+  .req-mid.hidden { display: none; }
+  .req-mid-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  }
+  .req-mid .req-id-badge { background: #6366f1; }
+  .req-mid .req-name { font-size: 13px; }
+  .req-detail {
+    font-size: 12px; color: #4b5563; margin-top: 6px; line-height: 1.6;
+    padding-left: 4px;
+  }
+
+  /* WBS table */
+  .wbs-section { margin-top: 12px; }
+  .wbs-section h4 {
+    font-size: 11px; color: #6b7280; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600;
+  }
+  table.wbs {
+    width: 100%; border-collapse: collapse; font-size: 12px;
+  }
+  table.wbs th, table.wbs td {
+    padding: 6px 8px; text-align: left; border-bottom: 1px solid #f3f4f6;
+    vertical-align: top;
+  }
+  table.wbs th { background: #f9fafb; font-weight: 600; color: #6b7280;
+                 font-size: 11px; text-transform: uppercase; }
+  table.wbs td.wbs-code { font-family: monospace; color: #1e40af; font-weight: 600; }
+  table.wbs td.task-name { font-weight: 500; color: #111827; }
+  .role-badge {
+    display: inline-block; padding: 1px 6px; border-radius: 4px;
+    font-size: 10px; font-weight: 500;
+  }
+  .role-PM, .role-pm { background: #ede9fe; color: #5b21b6; }
+  .role-기획자, .role-기획 { background: #ccfbf1; color: #115e59; }
+  .role-개발자 { background: #dbeafe; color: #1e40af; }
+  .role-디자이너 { background: #fce7f3; color: #9d174d; }
+  .role-QA, .role-qa { background: #fef3c7; color: #92400e; }
+  .role-DBA, .role-dba { background: #fee2e2; color: #991b1b; }
+  .role-default { background: #f3f4f6; color: #374151; }
+
+  .no-wbs { font-size: 12px; color: #9ca3af; font-style: italic; padding: 8px; }
+
+  .empty { text-align: center; padding: 40px; color: #9ca3af; }
+
+  .reload-btn {
+    background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);
+    padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .reload-btn:hover { background: rgba(255,255,255,0.15); }
+
+  @media (max-width: 900px) {
+    .container { grid-template-columns: 1fr; }
+    aside { position: static; max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>RFP 분석 결과 뷰어</h1>
+    <div class="meta" id="header-meta"></div>
+  </div>
+  <button class="reload-btn" id="reload-btn" style="display:none" onclick="resetApp()">새 파일 로드</button>
+</header>
+
+<!-- Loader -->
+<section id="loader">
+  <h2>📄 분석 결과 JSON을 불러오세요</h2>
+  <p><code>POST /rfp/{rfp_id}/analyze-chunked</code> 응답 JSON을 파일로 업로드하거나 직접 붙여넣으세요.</p>
+
+  <div id="drop-zone" onclick="document.getElementById('file-input').click()">
+    <div class="icon">📁</div>
+    <p><strong>JSON 파일을 드래그하거나 클릭하여 선택</strong></p>
+    <p class="hint">.json 파일만 지원</p>
+    <input type="file" id="file-input" accept=".json,application/json" style="display:none">
+  </div>
+
+  <div class="divider">또는 JSON 직접 붙여넣기</div>
+
+  <textarea id="json-input" placeholder='{"rfp_id": "...", "project": {...}, "requirements": [...], "wbs": [...]}'></textarea>
+  <button id="parse-btn">분석 결과 보기</button>
+  <div id="error"></div>
+</section>
+
+<!-- Dashboard -->
+<section id="dashboard">
+  <div class="container">
+    <aside>
+      <div class="card" id="project-card">
+        <h3>프로젝트 정보</h3>
+        <div id="project-info"></div>
+      </div>
+
+      <div class="card">
+        <h3>분석 통계</h3>
+        <div class="stats-grid">
+          <div class="stat-tile"><div class="num" id="stat-large">0</div><div class="label">대분류</div></div>
+          <div class="stat-tile"><div class="num" id="stat-mid">0</div><div class="label">중분류</div></div>
+          <div class="stat-tile"><div class="num" id="stat-wbs">0</div><div class="label">WBS Task</div></div>
+          <div class="stat-tile"><div class="num" id="stat-days">0</div><div class="label">총 작업일</div></div>
+        </div>
+      </div>
+
+      <div class="card" id="roles-card">
+        <h3>역할별 WBS 수</h3>
+        <div id="roles-breakdown"></div>
+      </div>
+
+      <div class="card" id="meta-card">
+        <h3>분석 메타데이터</h3>
+        <div id="meta-info"></div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="toolbar">
+        <input id="search" placeholder="🔍 요구사항명, 태스크명, ID 검색...">
+        <select id="filter-type">
+          <option value="">모든 유형</option>
+          <option value="기능">기능</option>
+          <option value="비기능">비기능</option>
+        </select>
+        <select id="filter-role">
+          <option value="">모든 담당</option>
+          <option value="PM">PM</option>
+          <option value="기획">기획</option>
+          <option value="개발-화면">개발-화면</option>
+          <option value="개발-비화면">개발-비화면</option>
+        </select>
+        <button id="expand-all">모두 펼치기</button>
+        <button id="collapse-all">모두 접기</button>
+      </div>
+
+      <div id="requirements-tree"></div>
+    </main>
+  </div>
+</section>
+
+<script>
+let analysisData = null;
+
+// ── File / JSON loading ─────────────────────────────────────────
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const jsonInput = document.getElementById('json-input');
+const parseBtn = document.getElementById('parse-btn');
+const errorEl = document.getElementById('error');
+
+['dragenter', 'dragover'].forEach(ev =>
+  dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('dragover'); })
+);
+['dragleave', 'drop'].forEach(ev =>
+  dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('dragover'); })
+);
+dropZone.addEventListener('drop', e => {
+  const file = e.dataTransfer.files[0];
+  if (file) loadFile(file);
+});
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) loadFile(file);
+});
+
+function loadFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      showDashboard(data);
+    } catch (err) { showError('JSON 파싱 실패: ' + err.message); }
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+parseBtn.addEventListener('click', () => {
+  const text = jsonInput.value.trim();
+  if (!text) return showError('JSON을 입력하세요.');
+  try {
+    showDashboard(JSON.parse(text));
+  } catch (err) { showError('JSON 파싱 실패: ' + err.message); }
+});
+
+function showError(msg) {
+  errorEl.textContent = '⚠️ ' + msg;
+  setTimeout(() => { errorEl.textContent = ''; }, 5000);
+}
+
+function resetApp() {
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loader').style.display = 'block';
+  document.getElementById('reload-btn').style.display = 'none';
+  document.getElementById('header-meta').textContent = '';
+  jsonInput.value = '';
+  fileInput.value = '';
+  analysisData = null;
+}
+
+// ── Dashboard rendering ─────────────────────────────────────────
+function showDashboard(data) {
+  if (!data || (!data.requirements && !data.wbs)) {
+    return showError('요구사항/WBS 데이터가 없습니다.');
+  }
+  analysisData = data;
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('reload-btn').style.display = 'inline-block';
+
+  document.getElementById('header-meta').textContent =
+    (data.project?.project_name || data.rfp_id || '') +
+    (data.elapsed_seconds ? ` · 분석 ${data.elapsed_seconds.toFixed(1)}s` : '');
+
+  renderProjectCard(data.project || {});
+  renderStats(data);
+  renderRolesBreakdown(data);
+  renderMetaCard(data);
+  renderRequirementsTree(data);
+  attachFilters();
+}
+
+function renderProjectCard(p) {
+  const fields = [
+    ['프로젝트명', p.project_name],
+    ['주제', p.project_theme],
+    ['발주사', p.client_name],
+    ['주관사', p.lead_company],
+    ['협력사', (p.partner_companies || []).join(', ')],
+    ['사업 금액', p.project_amount ? p.project_amount.toLocaleString() + '원' : null],
+    ['예산 (원문)', p.budget],
+    ['계약 방식', p.contract_type],
+    ['사업 유형', p.business_type],
+    ['수행 기간', [p.start_date, p.end_date].filter(Boolean).join(' ~ ')],
+    ['설명', p.description],
+  ];
+  const html = fields
+    .filter(([_, v]) => v && v !== '')
+    .map(([k, v]) => `<div class="field"><div class="label">${k}</div><div class="value">${escapeHtml(v)}</div></div>`)
+    .join('');
+  document.getElementById('project-info').innerHTML = html || '<div class="empty">정보 없음</div>';
+}
+
+function renderStats(data) {
+  const reqs = data.requirements || [];
+  const wbs = data.wbs || [];
+  const larges = reqs.filter(r => !r.req_id.includes('-', r.req_id.indexOf('-') + 1));
+  const mids = reqs.filter(r => r.req_id.includes('-', r.req_id.indexOf('-') + 1));
+  const totalDays = wbs.reduce((s, w) => s + (w.estimated_days || 0), 0);
+  document.getElementById('stat-large').textContent = larges.length;
+  document.getElementById('stat-mid').textContent = mids.length;
+  document.getElementById('stat-wbs').textContent = wbs.length;
+  document.getElementById('stat-days').textContent = totalDays.toFixed(1);
+}
+
+function renderRolesBreakdown(data) {
+  const wbs = data.wbs || [];
+  const counts = {};
+  wbs.forEach(w => {
+    const role = w.assignee_role || '미배정';
+    counts[role] = (counts[role] || 0) + 1;
+  });
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  const total = wbs.length || 1;
+  const html = sorted.map(([role, n]) => {
+    const pct = ((n / total) * 100).toFixed(0);
+    return `<div class="field">
+      <div style="display:flex;justify-content:space-between;font-size:12px;">
+        <span><span class="role-badge role-${role}">${escapeHtml(role)}</span></span>
+        <span style="color:#6b7280">${n} (${pct}%)</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('roles-breakdown').innerHTML = html || '<div class="empty">WBS 없음</div>';
+}
+
+function renderMetaCard(data) {
+  const m = data.analysis_metadata || {};
+  const fields = [
+    ['신뢰도 점수', data.confidence_score != null ? (data.confidence_score * 100).toFixed(1) + '%' : null],
+    ['총 계획 공수', m.total_planned_hours != null ? m.total_planned_hours.toFixed(1) + 'h' : null],
+    ['rfp_id', data.rfp_id],
+    ['상태', data.status],
+  ];
+  document.getElementById('meta-info').innerHTML = fields
+    .filter(([_, v]) => v != null && v !== '')
+    .map(([k, v]) => `<div class="field"><div class="label">${k}</div><div class="value">${escapeHtml(v)}</div></div>`)
+    .join('');
+}
+
+// ── Requirement tree ────────────────────────────────────────────
+function renderRequirementsTree(data) {
+  const reqs = data.requirements || [];
+  const wbs = data.wbs || [];
+
+  // wbs를 req_id별로 그룹화
+  const wbsByReqId = {};
+  wbs.forEach(w => {
+    const rid = w.req_id || '_unassigned';
+    (wbsByReqId[rid] = wbsByReqId[rid] || []).push(w);
+  });
+
+  // Large vs Mid 분리
+  // Mid: req_id에 '-'가 2회 이상 (REQ-001-001)
+  // Large: req_id에 '-'가 1회 (REQ-001)
+  const larges = [];
+  const midsByParent = {};
+  reqs.forEach(r => {
+    const segs = (r.req_id || '').split('-');
+    if (segs.length >= 3) {
+      // Mid
+      const parentId = segs.slice(0, -1).join('-');
+      (midsByParent[parentId] = midsByParent[parentId] || []).push(r);
+    } else {
+      larges.push(r);
+    }
+  });
+
+  // 부모 없는 Mid도 처리 — Large로 승격
+  Object.keys(midsByParent).forEach(parentId => {
+    if (!larges.find(l => l.req_id === parentId)) {
+      // 가상의 Large 생성 (부모 없는 Mid 그룹용)
+      larges.push({ req_id: parentId, req_name: `(부모 누락) ${parentId}`, _virtual: true });
+    }
+  });
+
+  const container = document.getElementById('requirements-tree');
+  if (larges.length === 0) {
+    container.innerHTML = '<div class="empty">요구사항이 없습니다.</div>';
+    return;
+  }
+
+  container.innerHTML = larges
+    .sort((a, b) => (a.req_id || '').localeCompare(b.req_id || ''))
+    .map(large => renderLarge(large, midsByParent[large.req_id] || [], wbsByReqId))
+    .join('');
+
+  // 클릭으로 펼치기/접기
+  container.querySelectorAll('.req-header').forEach(h => {
+    h.addEventListener('click', () => h.parentElement.classList.toggle('collapsed'));
+  });
+}
+
+function renderLarge(large, mids, wbsByReqId) {
+  const wbsForLarge = wbsByReqId[large.req_id] || [];
+  const totalWbs = wbsForLarge.length + mids.reduce((s, m) => s + (wbsByReqId[m.req_id]?.length || 0), 0);
+  return `
+    <div class="req-large" data-req-id="${escapeHtml(large.req_id)}" data-req-type="${escapeHtml(large.requirement_type || '')}">
+      <div class="req-header">
+        <span class="toggle">▼</span>
+        <span class="req-id-badge">${escapeHtml(large.req_id || '')}</span>
+        <span class="req-name">${escapeHtml(large.req_name || '(이름 없음)')}</span>
+        <span class="req-counts">Mid ${mids.length} · WBS ${totalWbs}</span>
+      </div>
+      <div class="req-body">
+        ${renderMetaBadges(large)}
+        ${large.req_description ? `<div class="req-desc">${escapeHtml(large.req_description)}</div>` : ''}
+        ${large.notes ? `<div class="req-notes">📌 ${escapeHtml(large.notes)}</div>` : ''}
+        ${wbsForLarge.length > 0 ? renderWbsTable(wbsForLarge, 'Large 직속 WBS') : ''}
+        ${mids.length > 0 ? `<div class="mid-list">${mids
+          .sort((a, b) => (a.req_id || '').localeCompare(b.req_id || ''))
+          .map(m => renderMid(m, wbsByReqId[m.req_id] || [])).join('')}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderMid(mid, wbsList) {
+  return `
+    <div class="req-mid" data-req-id="${escapeHtml(mid.req_id)}" data-req-type="${escapeHtml(mid.requirement_type || '')}">
+      <div class="req-mid-header">
+        <span class="req-id-badge">${escapeHtml(mid.req_id || '')}</span>
+        <span class="req-name">${escapeHtml(mid.req_name || '')}</span>
+      </div>
+      ${renderMetaBadges(mid)}
+      ${mid.req_description ? `<div class="req-desc">${escapeHtml(mid.req_description)}</div>` : ''}
+      ${mid.req_detail ? `<div class="req-detail">📝 ${escapeHtml(mid.req_detail)}</div>` : ''}
+      ${mid.notes ? `<div class="req-notes">📌 ${escapeHtml(mid.notes)}</div>` : ''}
+      ${wbsList.length > 0 ? renderWbsTable(wbsList) : `<div class="no-wbs">연결된 WBS 없음</div>`}
+    </div>
+  `;
+}
+
+function renderMetaBadges(r) {
+  const badges = [];
+  if (r.requirement_type) {
+    badges.push(`<span class="badge badge-type-${escapeAttr(r.requirement_type)}">${escapeHtml(r.requirement_type)}</span>`);
+  } else if (r.req_category) {
+    badges.push(`<span class="badge badge-default">${escapeHtml(r.req_category)}</span>`);
+  }
+  (r.assignee_type || []).forEach(a =>
+    badges.push(`<span class="badge badge-assignee-${escapeAttr(a)}">${escapeHtml(a)}</span>`)
+  );
+  (r.user_type || []).forEach(u =>
+    badges.push(`<span class="badge badge-user-${escapeAttr(u)}">${escapeHtml(u)}</span>`)
+  );
+  if (r.priority) badges.push(`<span class="badge badge-default">우선순위: ${escapeHtml(r.priority)}</span>`);
+  if (r.importance) badges.push(`<span class="badge badge-default">중요도: ${escapeHtml(r.importance)}</span>`);
+  return badges.length ? `<div class="req-meta">${badges.join('')}</div>` : '';
+}
+
+function renderWbsTable(wbsList, title = 'WBS 태스크') {
+  const sorted = [...wbsList].sort((a, b) => (a.wbs_code || '').localeCompare(b.wbs_code || ''));
+  const rows = sorted.map(w => `
+    <tr data-task-name="${escapeAttr(w.task_name || '')}" data-role="${escapeAttr(w.assignee_role || '')}">
+      <td class="wbs-code">${escapeHtml(w.wbs_code || '')}</td>
+      <td class="task-name">${escapeHtml(w.task_name || '')}</td>
+      <td><span class="role-badge role-${escapeAttr(w.assignee_role || 'default')}">${escapeHtml(w.assignee_role || '-')}</span></td>
+      <td>${w.estimated_days ?? '-'}일</td>
+      <td>${w.planned_hours ?? '-'}h</td>
+      <td>${w.planned_start ? escapeHtml(w.planned_start) + ' ~ ' + escapeHtml(w.planned_end || '?') : '-'}</td>
+      <td style="font-size:11px;color:#6b7280">${(w.depends_on || []).join(', ') || '-'}</td>
+    </tr>
+    ${w.task_description ? `<tr class="task-desc-row"><td colspan="7" style="font-size:11px;color:#6b7280;padding-left:24px;background:#fafafa">↳ ${escapeHtml(w.task_description)}</td></tr>` : ''}
+  `).join('');
+
+  return `
+    <div class="wbs-section">
+      <h4>${escapeHtml(title)} (${sorted.length})</h4>
+      <table class="wbs">
+        <thead>
+          <tr>
+            <th>WBS</th><th>태스크명</th><th>담당</th><th>일수</th><th>공수</th><th>일정</th><th>선행</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ── Filtering ───────────────────────────────────────────────────
+function attachFilters() {
+  const search = document.getElementById('search');
+  const ftype = document.getElementById('filter-type');
+  const frole = document.getElementById('filter-role');
+
+  function applyFilters() {
+    const q = search.value.trim().toLowerCase();
+    const tfilter = ftype.value;
+    const rfilter = frole.value;
+
+    document.querySelectorAll('.req-large').forEach(large => {
+      let largeMatchesQ = !q
+        || large.dataset.reqId.toLowerCase().includes(q)
+        || large.querySelector('.req-name').textContent.toLowerCase().includes(q);
+      let largeMatchesType = !tfilter || large.dataset.reqType === tfilter;
+
+      let visibleMids = 0;
+      large.querySelectorAll('.req-mid').forEach(mid => {
+        const midText = mid.textContent.toLowerCase();
+        const matchesQ = !q || midText.includes(q);
+        const matchesType = !tfilter || mid.dataset.reqType === tfilter;
+        // role 필터: assignee badge에 포함되는지
+        const matchesRole = !rfilter || mid.querySelectorAll('.badge-assignee-' + cssEscape(rfilter)).length > 0;
+        const show = matchesQ && matchesType && matchesRole;
+        mid.classList.toggle('hidden', !show);
+        if (show) visibleMids++;
+      });
+
+      // Large의 직속 WBS도 검색에 포함
+      let visibleDirectWbs = false;
+      large.querySelectorAll('.req-body > .wbs-section tbody tr:not(.task-desc-row)').forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (!q || text.includes(q)) visibleDirectWbs = true;
+      });
+
+      const showLarge = (largeMatchesQ || visibleMids > 0 || visibleDirectWbs)
+        && (largeMatchesType || visibleMids > 0)
+        && (!rfilter
+            || large.querySelectorAll('.req-body > .req-meta .badge-assignee-' + cssEscape(rfilter)).length > 0
+            || visibleMids > 0);
+      large.classList.toggle('hidden', !showLarge);
+    });
+  }
+
+  [search, ftype, frole].forEach(el => el.addEventListener('input', applyFilters));
+
+  document.getElementById('expand-all').addEventListener('click', () =>
+    document.querySelectorAll('.req-large').forEach(e => e.classList.remove('collapsed'))
+  );
+  document.getElementById('collapse-all').addEventListener('click', () =>
+    document.querySelectorAll('.req-large').forEach(e => e.classList.add('collapsed'))
+  );
+}
+
+// ── Helpers ─────────────────────────────────────────────────────
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+  );
+}
+function escapeAttr(s) {
+  return String(s || '').replace(/[^a-zA-Z0-9가-힣\-_]/g, '_');
+}
+function cssEscape(s) {
+  return String(s || '').replace(/([^a-zA-Z0-9가-힣\-_])/g, '\\$1');
+}
+</script>
+</body>
+</html>

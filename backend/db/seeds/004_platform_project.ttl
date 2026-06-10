@@ -1,0 +1,509 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix pm:   <https://ontology.example.org/project-management#> .
+@prefix inst: <https://ontology.example.org/instances#> .
+
+# ══════════════════════════════════════════════════════════════════
+#  플랫폼 개발 프로젝트 (PLT001) — 통합 업무 관리 플랫폼
+#  기간 : 2026-06-01 ~ 2026-10-30 (5개월, 약 110 영업일)
+#  인력 : 002_persons.ttl의 PM001(PM) / PL001(기획자) / DEV001(개발자)
+#         3명을 본 프로젝트에 참여시킴 (pm:participatesIn 트리플 추가)
+#  핵심 화면 : 로그인 화면, 마이페이지 화면 — 각각 기획+개발 분리 진행
+# ══════════════════════════════════════════════════════════════════
+
+# ──────────────────────────────────────────────────────────────────
+#  조직
+# ──────────────────────────────────────────────────────────────────
+
+inst:org_PLT a pm:Organization ;
+    pm:orgId   "ORG_PLT" ;
+    pm:orgName "Dweax 플랫폼 본부" .
+
+# ──────────────────────────────────────────────────────────────────
+#  프로젝트
+# ──────────────────────────────────────────────────────────────────
+
+inst:project_plt001 a pm:Project ;
+    pm:projectId       "PLT001" ;
+    pm:projectName     "통합 업무 관리 플랫폼 구축" ;
+    pm:projectStatus   "ACTIVE" ;
+    pm:projectDomain   "B2B SaaS" ;
+    pm:projectTheme    "사내 업무 효율화 플랫폼" ;
+    pm:techStack       "React" ;
+    pm:techStack       "TypeScript" ;
+    pm:techStack       "FastAPI" ;
+    pm:techStack       "PostgreSQL" ;
+    pm:difficultyLevel "MEDIUM" ;
+    pm:description     "조직 전체의 업무·일정·문서를 한곳에서 관리할 수 있는 B2B SaaS 플랫폼. 사용자 인증, 마이페이지, 대시보드, 실시간 알림 기능을 단계적으로 구축한다." ;
+    pm:startDate       "2026-06-01"^^xsd:date ;
+    pm:endDate         "2026-10-30"^^xsd:date ;
+    pm:projectAmount   "350000000"^^xsd:integer ;
+    pm:budget          "3억 5천만원" ;
+    pm:contractType    "확정금액" ;
+    pm:businessType    "신규 구축" ;
+    pm:leadCompany     "Dweax" ;
+    pm:ownedBy         inst:org_PLT ;
+    pm:googleSlideId   "179YsK1dfr4nySROubKHfRKgIVgax87AplMFJ3Q9LPWs" ;
+    pm:gitlabProjectId "24" ;
+    pm:gitlabRepoUrl   "http://dweax.iptime.org:50004/mvp/mvp-demo.git" .
+
+# ──────────────────────────────────────────────────────────────────
+#  인력 참여 — 002_persons.ttl의 기존 Person URI에 트리플만 추가
+# ──────────────────────────────────────────────────────────────────
+
+inst:person_PM001
+    pm:belongsTo      inst:org_PLT ;
+    pm:participatesIn inst:project_plt001 .
+
+inst:person_PL001
+    pm:belongsTo      inst:org_PLT ;
+    pm:participatesIn inst:project_plt001 .
+
+inst:person_DEV001
+    pm:belongsTo      inst:org_PLT ;
+    pm:participatesIn inst:project_plt001 .
+
+# ──────────────────────────────────────────────────────────────────
+#  역할별 필요 인원 (RequiredRole)
+# ──────────────────────────────────────────────────────────────────
+
+inst:reqrole_plt001_pm a pm:RequiredRole ;
+    pm:roleName          "PM" ;
+    pm:requiredCount     "1"^^xsd:integer ;
+    pm:requiredMM        "5.0"^^xsd:decimal ;
+    pm:requiredTotalDays "110.0"^^xsd:decimal ;
+    pm:requiredTotalHours "880.0"^^xsd:decimal ;
+    pm:requiredTaskCount "1"^^xsd:integer ;
+    pm:requiredSkill     "프로젝트 관리" ;
+    pm:requiredSkill     "일정 관리" ;
+    pm:requiredSkill     "리스크 관리" .
+
+inst:reqrole_plt001_pl a pm:RequiredRole ;
+    pm:roleName          "기획자" ;
+    pm:requiredCount     "1"^^xsd:integer ;
+    pm:requiredMM        "0.7"^^xsd:decimal ;
+    pm:requiredTotalDays "15.0"^^xsd:decimal ;
+    pm:requiredTotalHours "120.0"^^xsd:decimal ;
+    pm:requiredTaskCount "3"^^xsd:integer ;
+    pm:requiredSkill     "요구사항 분석" ;
+    pm:requiredSkill     "UX 기획" ;
+    pm:requiredSkill     "화면 정의서" .
+
+inst:reqrole_plt001_dev a pm:RequiredRole ;
+    pm:roleName          "개발자" ;
+    pm:requiredCount     "1"^^xsd:integer ;
+    pm:requiredMM        "4.3"^^xsd:decimal ;
+    pm:requiredTotalDays "95.0"^^xsd:decimal ;
+    pm:requiredTotalHours "760.0"^^xsd:decimal ;
+    pm:requiredTaskCount "8"^^xsd:integer ;
+    pm:requiredSkill     "React" ;
+    pm:requiredSkill     "TypeScript" ;
+    pm:requiredSkill     "FastAPI" ;
+    pm:requiredSkill     "PostgreSQL" .
+
+inst:project_plt001 pm:requiresRole
+    inst:reqrole_plt001_pm,
+    inst:reqrole_plt001_pl,
+    inst:reqrole_plt001_dev .
+
+# ══════════════════════════════════════════════════════════════════
+#  요구사항 — 대분류(REQ-XXX) + 중분류(REQ-XXX-YYY)
+#  대분류는 부모 컨테이너 역할, 실제 WBS는 중분류 단위로 연결
+# ══════════════════════════════════════════════════════════════════
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-001 사용자 인증 (대분류)  ※ 로그인 화면 포함 — 필수
+# ──────────────────────────────────────────────────────────────────
+
+inst:req_PLT001_R001 a pm:Requirement ;
+    pm:requirementId          "REQ-001" ;
+    pm:requirementName        "사용자 인증" ;
+    pm:requirementDescription "이메일·소셜 로그인, 회원가입, 세션 관리 등 사용자 인증 체계 전반" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "HIGH" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "사용자" ;
+    pm:relatedToProject       inst:project_plt001 .
+
+inst:req_PLT001_R001_001 a pm:Requirement ;
+    pm:requirementId          "REQ-001-001" ;
+    pm:requirementName        "로그인 화면" ;
+    pm:requirementDescription "이메일/비밀번호 입력 및 소셜 로그인 버튼이 포함된 로그인 화면. 잘못된 입력 시 인라인 에러 표시." ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "HIGH" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "사용자" ;
+    pm:relatedToProject       inst:project_plt001 .
+
+inst:req_PLT001_R001_002 a pm:Requirement ;
+    pm:requirementId          "REQ-001-002" ;
+    pm:requirementName        "회원가입" ;
+    pm:requirementDescription "이메일 인증 기반 회원가입 API 및 입력 검증" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "MEDIUM" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "사용자" ;
+    pm:relatedToProject       inst:project_plt001 .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-002 마이페이지 (대분류)  ※ 마이페이지 화면 포함 — 필수
+# ──────────────────────────────────────────────────────────────────
+
+inst:req_PLT001_R002 a pm:Requirement ;
+    pm:requirementId          "REQ-002" ;
+    pm:requirementName        "마이페이지" ;
+    pm:requirementDescription "사용자 본인 정보 조회·수정, 비밀번호 변경, 알림 환경설정 등 개인 영역" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "HIGH" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "사용자" ;
+    pm:relatedToProject       inst:project_plt001 .
+
+inst:req_PLT001_R002_001 a pm:Requirement ;
+    pm:requirementId          "REQ-002-001" ;
+    pm:requirementName        "마이페이지 화면" ;
+    pm:requirementDescription "프로필 정보 표시·수정, 비밀번호 변경 폼, 알림 토글 등이 한 화면에서 제공" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "HIGH" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "사용자" ;
+    pm:relatedToProject       inst:project_plt001 .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-003 대시보드 (대분류)
+# ──────────────────────────────────────────────────────────────────
+
+inst:req_PLT001_R003 a pm:Requirement ;
+    pm:requirementId          "REQ-003" ;
+    pm:requirementName        "대시보드" ;
+    pm:requirementDescription "로그인 후 진입하는 메인 대시보드 — 주요 지표 카드, 진행 중인 업무, 최근 알림 요약" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "MEDIUM" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "사용자" ;
+    pm:relatedToProject       inst:project_plt001 .
+
+inst:req_PLT001_R003_001 a pm:Requirement ;
+    pm:requirementId          "REQ-003-001" ;
+    pm:requirementName        "메인 대시보드" ;
+    pm:requirementDescription "지표 카드(4종), 업무 리스트, 최근 알림 5건이 표시되는 메인 화면" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "MEDIUM" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "사용자" ;
+    pm:relatedToProject       inst:project_plt001 .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-004 알림 시스템 (대분류)
+# ──────────────────────────────────────────────────────────────────
+
+inst:req_PLT001_R004 a pm:Requirement ;
+    pm:requirementId          "REQ-004" ;
+    pm:requirementName        "알림 시스템" ;
+    pm:requirementDescription "이벤트 기반 실시간 알림 발송·조회·읽음 처리" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "MEDIUM" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "사용자" ;
+    pm:relatedToProject       inst:project_plt001 .
+
+inst:req_PLT001_R004_001 a pm:Requirement ;
+    pm:requirementId          "REQ-004-001" ;
+    pm:requirementName        "실시간 알림" ;
+    pm:requirementDescription "SSE 기반 실시간 알림 전송 API, 알림 읽음 처리, 마이페이지 알림 환경설정과 연동" ;
+    pm:requirementType        "기능" ;
+    pm:requirementPriority    "MEDIUM" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:userType               "사용자" ;
+    pm:relatedToProject       inst:project_plt001 .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-005 통합 안정화 (대분류) — 종료 단계
+# ──────────────────────────────────────────────────────────────────
+
+inst:req_PLT001_R005 a pm:Requirement ;
+    pm:requirementId          "REQ-005" ;
+    pm:requirementName        "통합 안정화" ;
+    pm:requirementDescription "전체 기능 통합 테스트, 성능 점검, 배포 자동화, 운영 이관" ;
+    pm:requirementType        "비기능" ;
+    pm:requirementPriority    "HIGH" ;
+    pm:requirementStatus      "APPROVED" ;
+    pm:relatedToProject       inst:project_plt001 .
+
+# ══════════════════════════════════════════════════════════════════
+#  WBS 태스크
+#  - wbsCode 규약 : <대분류>.<중분류>.<역할>.<순번>  (예: 1.1.PL.1)
+#  - PM 태스크는 0.PM.1로 별도 표기
+#  - 의존성: 기획(PL) → 개발(DEV) → 통합(QA) 순
+# ══════════════════════════════════════════════════════════════════
+
+# ──────────────────────────────────────────────────────────────────
+#  0.PM.1 — 프로젝트 관리 (전체 기간)
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_plt001_pm1 a pm:Task ;
+    pm:taskId                "PLT001-T001" ;
+    pm:wbsCode               "0.PM.1" ;
+    pm:taskName              "프로젝트 관리" ;
+    pm:taskDescription       "킥오프, 주간보고, 일정·리스크 관리, 산출물 검수, 고객 커뮤니케이션" ;
+    pm:taskStatus            "진행" ;
+    pm:progressPercent       30 ;
+    pm:plannedStart          "2026-06-01"^^xsd:date ;
+    pm:dueDate               "2026-10-30"^^xsd:date ;
+    pm:plannedHours          "880.0"^^xsd:decimal ;
+    pm:estimatedDays         "110.0"^^xsd:decimal ;
+    pm:deliverable           "킥오프 자료, 주간보고서, 종료 보고서" ;
+    pm:assignedTo            inst:person_PM001 ;
+    pm:assigneeRole          "PM" ;
+    pm:phase                 "foundation" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "low" .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-001-001 로그인 화면 — 기획 + 개발
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_plt001_login_pl a pm:Task ;
+    pm:taskId                "PLT001-T002" ;
+    pm:wbsCode               "1.1.PL.1" ;
+    pm:taskName              "로그인 화면 정의서 작성" ;
+    pm:taskDescription       "이메일/비밀번호 + 소셜 로그인 UI 와이어프레임, 에러 상태 흐름도 포함" ;
+    pm:taskStatus            "진행" ;
+    pm:progressPercent       50 ;
+    pm:plannedStart          "2026-06-02"^^xsd:date ;
+    pm:dueDate               "2026-06-06"^^xsd:date ;
+    pm:plannedHours          "40.0"^^xsd:decimal ;
+    pm:estimatedDays         "5.0"^^xsd:decimal ;
+    pm:deliverable           "로그인 화면 와이어프레임" ;
+    pm:deliverable           "에러 상태 플로우 차트" ;
+    pm:assignedTo            inst:person_PL001 ;
+    pm:assigneeRole          "기획자" ;
+    pm:implementsRequirement inst:req_PLT001_R001_001 ;
+    pm:phase                 "foundation" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "low" .
+
+inst:task_plt001_login_dev a pm:Task ;
+    pm:taskId                "PLT001-T003" ;
+    pm:wbsCode               "1.1.DEV.1" ;
+    pm:taskName              "로그인 화면 구현" ;
+    pm:taskDescription       "React + TypeScript로 로그인 화면 구현, 이메일/비밀번호 검증, JWT 토큰 수신 처리" ;
+    pm:taskStatus            "진행" ;
+    pm:progressPercent       50 ;
+    pm:plannedStart          "2026-06-22"^^xsd:date ;
+    pm:dueDate               "2026-07-03"^^xsd:date ;
+    pm:plannedHours          "80.0"^^xsd:decimal ;
+    pm:estimatedDays         "10.0"^^xsd:decimal ;
+    pm:deliverable           "로그인 화면 React 컴포넌트" ;
+    pm:deliverable           "프론트 단위 테스트" ;
+    pm:assignedTo            inst:person_DEV001 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_PLT001_R001_001 ;
+    pm:dependsOn             inst:task_plt001_login_pl ;
+    pm:phase                 "core" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "low" .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-001-002 회원가입 — 개발 단독
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_plt001_signup_dev a pm:Task ;
+    pm:taskId                "PLT001-T004" ;
+    pm:wbsCode               "1.2.DEV.1" ;
+    pm:taskName              "회원가입 API 구현" ;
+    pm:taskDescription       "이메일 중복 검사, 비밀번호 정책 검증, 가입 확인 메일 발송" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-07-06"^^xsd:date ;
+    pm:dueDate               "2026-07-10"^^xsd:date ;
+    pm:plannedHours          "40.0"^^xsd:decimal ;
+    pm:estimatedDays         "5.0"^^xsd:decimal ;
+    pm:deliverable           "회원가입 API 코드" ;
+    pm:deliverable           "API 명세서" ;
+    pm:assignedTo            inst:person_DEV001 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_PLT001_R001_002 ;
+    pm:dependsOn             inst:task_plt001_login_dev ;
+    pm:phase                 "core" ;
+    pm:criticality           "core" ;
+    pm:risk                  "low" .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-002-001 마이페이지 화면 — 기획 + 개발
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_plt001_mypage_pl a pm:Task ;
+    pm:taskId                "PLT001-T005" ;
+    pm:wbsCode               "2.1.PL.1" ;
+    pm:taskName              "마이페이지 화면 정의서 작성" ;
+    pm:taskDescription       "프로필 영역, 비밀번호 변경, 알림 설정 토글이 한 화면에 배치되는 화면 정의서" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-06-08"^^xsd:date ;
+    pm:dueDate               "2026-06-12"^^xsd:date ;
+    pm:plannedHours          "40.0"^^xsd:decimal ;
+    pm:estimatedDays         "5.0"^^xsd:decimal ;
+    pm:deliverable           "마이페이지 화면 정의서" ;
+    pm:assignedTo            inst:person_PL001 ;
+    pm:assigneeRole          "기획자" ;
+    pm:implementsRequirement inst:req_PLT001_R002_001 ;
+    pm:phase                 "foundation" ;
+    pm:criticality           "core" ;
+    pm:risk                  "low" .
+
+inst:task_plt001_mypage_dev a pm:Task ;
+    pm:taskId                "PLT001-T006" ;
+    pm:wbsCode               "2.1.DEV.1" ;
+    pm:taskName              "마이페이지 화면 구현" ;
+    pm:taskDescription       "React로 프로필 조회·수정 폼, 비밀번호 변경, 알림 환경설정 UI 구현" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-07-13"^^xsd:date ;
+    pm:dueDate               "2026-07-24"^^xsd:date ;
+    pm:plannedHours          "80.0"^^xsd:decimal ;
+    pm:estimatedDays         "10.0"^^xsd:decimal ;
+    pm:deliverable           "마이페이지 React 컴포넌트" ;
+    pm:deliverable           "프로필 수정·비밀번호 변경 API 연동" ;
+    pm:assignedTo            inst:person_DEV001 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_PLT001_R002_001 ;
+    pm:dependsOn             inst:task_plt001_mypage_pl ;
+    pm:dependsOn             inst:task_plt001_signup_dev ;
+    pm:phase                 "core" ;
+    pm:criticality           "core" ;
+    pm:risk                  "low" .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-003-001 메인 대시보드 — 기획 + 개발
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_plt001_dashboard_pl a pm:Task ;
+    pm:taskId                "PLT001-T007" ;
+    pm:wbsCode               "3.1.PL.1" ;
+    pm:taskName              "대시보드 와이어프레임" ;
+    pm:taskDescription       "지표 카드 배치, 업무 리스트 영역, 알림 패널 위치 결정" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-06-15"^^xsd:date ;
+    pm:dueDate               "2026-06-19"^^xsd:date ;
+    pm:plannedHours          "40.0"^^xsd:decimal ;
+    pm:estimatedDays         "5.0"^^xsd:decimal ;
+    pm:deliverable           "대시보드 와이어프레임" ;
+    pm:assignedTo            inst:person_PL001 ;
+    pm:assigneeRole          "기획자" ;
+    pm:implementsRequirement inst:req_PLT001_R003_001 ;
+    pm:phase                 "foundation" ;
+    pm:criticality           "normal" ;
+    pm:risk                  "low" .
+
+inst:task_plt001_dashboard_dev a pm:Task ;
+    pm:taskId                "PLT001-T008" ;
+    pm:wbsCode               "3.1.DEV.1" ;
+    pm:taskName              "대시보드 구현" ;
+    pm:taskDescription       "지표 카드, 업무 리스트, 최근 알림 5건 표시 영역 구현 및 API 연동" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-07-27"^^xsd:date ;
+    pm:dueDate               "2026-08-14"^^xsd:date ;
+    pm:plannedHours          "120.0"^^xsd:decimal ;
+    pm:estimatedDays         "15.0"^^xsd:decimal ;
+    pm:deliverable           "대시보드 화면 컴포넌트" ;
+    pm:deliverable           "지표 집계 API" ;
+    pm:assignedTo            inst:person_DEV001 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_PLT001_R003_001 ;
+    pm:dependsOn             inst:task_plt001_dashboard_pl ;
+    pm:dependsOn             inst:task_plt001_mypage_dev ;
+    pm:phase                 "feature" ;
+    pm:criticality           "normal" ;
+    pm:risk                  "low" .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-004-001 실시간 알림 — 개발 단독
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_plt001_notify_dev a pm:Task ;
+    pm:taskId                "PLT001-T009" ;
+    pm:wbsCode               "4.1.DEV.1" ;
+    pm:taskName              "실시간 알림 API 구현" ;
+    pm:taskDescription       "SSE 기반 실시간 알림 전송, 읽음 처리, 마이페이지 환경설정과 연동" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-08-17"^^xsd:date ;
+    pm:dueDate               "2026-08-28"^^xsd:date ;
+    pm:plannedHours          "80.0"^^xsd:decimal ;
+    pm:estimatedDays         "10.0"^^xsd:decimal ;
+    pm:deliverable           "알림 SSE API" ;
+    pm:deliverable           "알림 읽음 처리 API" ;
+    pm:assignedTo            inst:person_DEV001 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_PLT001_R004_001 ;
+    pm:dependsOn             inst:task_plt001_dashboard_dev ;
+    pm:phase                 "feature" ;
+    pm:criticality           "normal" ;
+    pm:risk                  "high" .
+
+# ──────────────────────────────────────────────────────────────────
+#  REQ-005 통합 안정화 — 통합 테스트 + 배포
+# ──────────────────────────────────────────────────────────────────
+
+inst:task_plt001_integration a pm:Task ;
+    pm:taskId                "PLT001-T010" ;
+    pm:wbsCode               "5.1.DEV.1" ;
+    pm:taskName              "통합 테스트" ;
+    pm:taskDescription       "전 기능 시나리오 테스트, 버그 트래킹, 회귀 테스트" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-08-31"^^xsd:date ;
+    pm:dueDate               "2026-09-30"^^xsd:date ;
+    pm:plannedHours          "176.0"^^xsd:decimal ;
+    pm:estimatedDays         "22.0"^^xsd:decimal ;
+    pm:deliverable           "통합 테스트 결과서" ;
+    pm:deliverable           "버그 리포트" ;
+    pm:assignedTo            inst:person_DEV001 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_PLT001_R005 ;
+    pm:dependsOn             inst:task_plt001_notify_dev ;
+    pm:phase                 "closing" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "low" .
+
+inst:task_plt001_release a pm:Task ;
+    pm:taskId                "PLT001-T011" ;
+    pm:wbsCode               "5.2.DEV.1" ;
+    pm:taskName              "안정화 및 배포" ;
+    pm:taskDescription       "프로덕션 배포, 모니터링 셋업, 운영 매뉴얼 작성, 운영 이관" ;
+    pm:taskStatus            "미진행" ;
+    pm:progressPercent       0 ;
+    pm:plannedStart          "2026-10-01"^^xsd:date ;
+    pm:dueDate               "2026-10-30"^^xsd:date ;
+    pm:plannedHours          "176.0"^^xsd:decimal ;
+    pm:estimatedDays         "22.0"^^xsd:decimal ;
+    pm:deliverable           "배포 가이드" ;
+    pm:deliverable           "운영 매뉴얼" ;
+    pm:assignedTo            inst:person_DEV001 ;
+    pm:assigneeRole          "개발자" ;
+    pm:implementsRequirement inst:req_PLT001_R005 ;
+    pm:dependsOn             inst:task_plt001_integration ;
+    pm:phase                 "closing" ;
+    pm:criticality           "blocker" ;
+    pm:risk                  "low" .
+
+# ──────────────────────────────────────────────────────────────────
+#  프로젝트 → 태스크 연결
+# ──────────────────────────────────────────────────────────────────
+
+inst:project_plt001 pm:hasTask
+    inst:task_plt001_pm1,
+    inst:task_plt001_login_pl,
+    inst:task_plt001_login_dev,
+    inst:task_plt001_signup_dev,
+    inst:task_plt001_mypage_pl,
+    inst:task_plt001_mypage_dev,
+    inst:task_plt001_dashboard_pl,
+    inst:task_plt001_dashboard_dev,
+    inst:task_plt001_notify_dev,
+    inst:task_plt001_integration,
+    inst:task_plt001_release .

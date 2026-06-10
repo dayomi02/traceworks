@@ -1,0 +1,127 @@
+services:
+
+  # ── FastAPI 백엔드 ─────────────────────────────────────────
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file: ./backend/.env
+    volumes:
+      - ./backend:/app          # 핫 리로드용 (개발)
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      fuseki:
+        condition: service_started
+    networks:
+      - pm-net
+
+  # ── Celery 워커 ────────────────────────────────────────────
+  worker:
+    build: ./backend
+    env_file: ./backend/.env
+    volumes:
+      - ./backend:/app
+    command: celery -A app.workers.celery_app worker --loglevel=info --concurrency=4
+    depends_on:
+      - redis
+      - postgres
+      - fuseki
+    networks:
+      - pm-net
+
+  # ── Celery Beat (주기적 태스크: 보고서, 스냅샷) ────────────
+  beat:
+    build: ./backend
+    env_file: ./backend/.env
+    volumes:
+      - ./backend:/app
+    command: celery -A app.workers.celery_app beat --loglevel=info
+    depends_on:
+      - redis
+    networks:
+      - pm-net
+
+  # ── Next.js 프론트엔드 ─────────────────────────────────────
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - pm-net
+
+  # ── PostgreSQL ─────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: pm_ontology
+      POSTGRES_USER: pm_user
+      POSTGRES_PASSWORD: pm_secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pm_user -d pm_ontology"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pm-net
+
+  # ── Apache Jena Fuseki (Triple Store) ─────────────────────
+  fuseki:
+    image: stain/jena-fuseki:5.0.0
+    ports:
+      - "3030:3030"
+    environment:
+      - ADMIN_PASSWORD=fuseki_secret
+      - JVM_ARGS=-Xmx2g
+    volumes:
+      - fuseki_data:/fuseki
+      - ./backend/ontology:/ontology   # TTL 파일 마운트
+    command: >
+      --update --mem /pm-ontology
+    networks:
+      - pm-net
+
+  # ── Redis (Celery 브로커 + 캐시) ───────────────────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - pm-net
+
+  # ── Flower (Celery 모니터링, 개발 전용) ───────────────────
+  flower:
+    build: ./backend
+    ports:
+      - "5555:5555"
+    env_file: ./backend/.env
+    command: celery -A app.workers.celery_app flower --port=5555
+    depends_on:
+      - redis
+    profiles:
+      - dev                     # docker compose --profile dev up 으로만 기동
+    networks:
+      - pm-net
+
+volumes:
+  postgres_data:
+  fuseki_data:
+  redis_data:
+
+networks:
+  pm-net:
+    driver: bridge

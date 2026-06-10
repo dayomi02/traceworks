@@ -1,0 +1,439 @@
+@prefix pm:   <https://ontology.example.org/project-management#> .
+@prefix inst: <https://ontology.example.org/instances#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# ════════════════════════════════════════════════════════════════
+# 인력 풀 (총 25명) — role은 "PM" / "기획자" / "개발자" 3종만 사용
+# 디자이너·DBA·DevOps·AI 등은 "개발자" + 특화 skill 조합으로 표현
+# grade: 사원 / 주임 / 대리 / 선임 / 책임 / 수석
+# availabilityScore: 0.45 ~ 1.00 다양화
+# ════════════════════════════════════════════════════════════════
+
+# ═══════════════════════════════════════════════════════════════
+# 1. PM (프로젝트 관리자) — 4명
+# ═══════════════════════════════════════════════════════════════
+
+inst:person_PM001 a pm:Person ;
+    pm:personId          "PM001" ;
+    pm:personName        "홍길동" ;
+    pm:role              "PM" ;
+    pm:grade             "수석" ;
+    pm:availabilityScore "0.85"^^xsd:decimal ;
+    pm:hasSkill inst:skill_PM001_1, inst:skill_PM001_2, inst:skill_PM001_3, inst:skill_PM001_4, inst:skill_PM001_5 .
+
+inst:skill_PM001_1 a pm:Skill ; pm:skillName "프로젝트 관리" ;     pm:proficiencyLevel "0.95"^^xsd:decimal .
+inst:skill_PM001_2 a pm:Skill ; pm:skillName "리스크 관리" ;       pm:proficiencyLevel "0.90"^^xsd:decimal .
+inst:skill_PM001_3 a pm:Skill ; pm:skillName "일정 관리" ;         pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_PM001_4 a pm:Skill ; pm:skillName "공공 프로젝트" ;     pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_PM001_5 a pm:Skill ; pm:skillName "보고서 작성" ;       pm:proficiencyLevel "0.90"^^xsd:decimal .
+
+inst:person_PM002 a pm:Person ;
+    pm:personId          "PM002" ;
+    pm:personName        "김지훈" ;
+    pm:role              "PM" ;
+    pm:grade             "책임" ;
+    pm:availabilityScore "0.70"^^xsd:decimal ;
+    pm:hasSkill inst:skill_PM002_1, inst:skill_PM002_2, inst:skill_PM002_3, inst:skill_PM002_4 .
+
+inst:skill_PM002_1 a pm:Skill ; pm:skillName "프로젝트 관리" ;     pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_PM002_2 a pm:Skill ; pm:skillName "예산 관리" ;         pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_PM002_3 a pm:Skill ; pm:skillName "이해관계자 관리" ;   pm:proficiencyLevel "0.82"^^xsd:decimal .
+inst:skill_PM002_4 a pm:Skill ; pm:skillName "금융 도메인" ;       pm:proficiencyLevel "0.80"^^xsd:decimal .
+
+inst:person_PM003 a pm:Person ;
+    pm:personId          "PM003" ;
+    pm:personName        "장하늘" ;
+    pm:role              "PM" ;
+    pm:grade             "선임" ;
+    pm:availabilityScore "0.92"^^xsd:decimal ;
+    pm:hasSkill inst:skill_PM003_1, inst:skill_PM003_2, inst:skill_PM003_3, inst:skill_PM003_4 .
+
+inst:skill_PM003_1 a pm:Skill ; pm:skillName "프로젝트 관리" ;     pm:proficiencyLevel "0.80"^^xsd:decimal .
+inst:skill_PM003_2 a pm:Skill ; pm:skillName "애자일" ;            pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_PM003_3 a pm:Skill ; pm:skillName "산출물 관리" ;       pm:proficiencyLevel "0.78"^^xsd:decimal .
+inst:skill_PM003_4 a pm:Skill ; pm:skillName "공공 SI" ;           pm:proficiencyLevel "0.82"^^xsd:decimal .
+
+inst:person_PM004 a pm:Person ;
+    pm:personId          "PM004" ;
+    pm:personName        "서영호" ;
+    pm:role              "PM" ;
+    pm:grade             "주임" ;
+    pm:availabilityScore "1.00"^^xsd:decimal ;
+    pm:hasSkill inst:skill_PM004_1, inst:skill_PM004_2, inst:skill_PM004_3 .
+
+inst:skill_PM004_1 a pm:Skill ; pm:skillName "프로젝트 관리" ;     pm:proficiencyLevel "0.72"^^xsd:decimal .
+inst:skill_PM004_2 a pm:Skill ; pm:skillName "회의록 작성" ;       pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_PM004_3 a pm:Skill ; pm:skillName "이커머스 도메인" ;   pm:proficiencyLevel "0.75"^^xsd:decimal .
+
+# ═══════════════════════════════════════════════════════════════
+# 2. 기획자 (Product/Service Planner) — 6명
+# ═══════════════════════════════════════════════════════════════
+
+inst:person_PL001 a pm:Person ;
+    pm:personId          "PL001" ;
+    pm:personName        "이수연" ;
+    pm:role              "기획자" ;
+    pm:grade             "수석" ;
+    pm:availabilityScore "0.78"^^xsd:decimal ;
+    pm:hasSkill inst:skill_PL001_1, inst:skill_PL001_2, inst:skill_PL001_3, inst:skill_PL001_4, inst:skill_PL001_5 .
+
+inst:skill_PL001_1 a pm:Skill ; pm:skillName "요구사항 분석" ;     pm:proficiencyLevel "0.95"^^xsd:decimal .
+inst:skill_PL001_2 a pm:Skill ; pm:skillName "UX 기획" ;           pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_PL001_3 a pm:Skill ; pm:skillName "화면 정의서" ;       pm:proficiencyLevel "0.90"^^xsd:decimal .
+inst:skill_PL001_4 a pm:Skill ; pm:skillName "사용자 시나리오" ;   pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_PL001_5 a pm:Skill ; pm:skillName "공공 도메인" ;       pm:proficiencyLevel "0.85"^^xsd:decimal .
+
+inst:person_PL002 a pm:Person ;
+    pm:personId          "PL002" ;
+    pm:personName        "박서준" ;
+    pm:role              "기획자" ;
+    pm:grade             "선임" ;
+    pm:availabilityScore "0.90"^^xsd:decimal ;
+    pm:hasSkill inst:skill_PL002_1, inst:skill_PL002_2, inst:skill_PL002_3, inst:skill_PL002_4 .
+
+inst:skill_PL002_1 a pm:Skill ; pm:skillName "요구사항 분석" ;     pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_PL002_2 a pm:Skill ; pm:skillName "프로세스 정의" ;     pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_PL002_3 a pm:Skill ; pm:skillName "스토리보드" ;        pm:proficiencyLevel "0.82"^^xsd:decimal .
+inst:skill_PL002_4 a pm:Skill ; pm:skillName "금융 도메인" ;       pm:proficiencyLevel "0.78"^^xsd:decimal .
+
+inst:person_PL003 a pm:Person ;
+    pm:personId          "PL003" ;
+    pm:personName        "황보영" ;
+    pm:role              "기획자" ;
+    pm:grade             "책임" ;
+    pm:availabilityScore "0.65"^^xsd:decimal ;
+    pm:hasSkill inst:skill_PL003_1, inst:skill_PL003_2, inst:skill_PL003_3, inst:skill_PL003_4, inst:skill_PL003_5 .
+
+inst:skill_PL003_1 a pm:Skill ; pm:skillName "서비스 기획" ;       pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_PL003_2 a pm:Skill ; pm:skillName "Figma" ;             pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_PL003_3 a pm:Skill ; pm:skillName "사용자 리서치" ;     pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_PL003_4 a pm:Skill ; pm:skillName "데이터 기획" ;       pm:proficiencyLevel "0.80"^^xsd:decimal .
+inst:skill_PL003_5 a pm:Skill ; pm:skillName "의료 도메인" ;       pm:proficiencyLevel "0.78"^^xsd:decimal .
+
+inst:person_PL004 a pm:Person ;
+    pm:personId          "PL004" ;
+    pm:personName        "조민재" ;
+    pm:role              "기획자" ;
+    pm:grade             "주임" ;
+    pm:availabilityScore "0.95"^^xsd:decimal ;
+    pm:hasSkill inst:skill_PL004_1, inst:skill_PL004_2, inst:skill_PL004_3 .
+
+inst:skill_PL004_1 a pm:Skill ; pm:skillName "요구사항 분석" ;     pm:proficiencyLevel "0.75"^^xsd:decimal .
+inst:skill_PL004_2 a pm:Skill ; pm:skillName "화면 정의서" ;       pm:proficiencyLevel "0.72"^^xsd:decimal .
+inst:skill_PL004_3 a pm:Skill ; pm:skillName "이커머스 도메인" ;   pm:proficiencyLevel "0.80"^^xsd:decimal .
+
+inst:person_PL005 a pm:Person ;
+    pm:personId          "PL005" ;
+    pm:personName        "신유진" ;
+    pm:role              "기획자" ;
+    pm:grade             "선임" ;
+    pm:availabilityScore "0.82"^^xsd:decimal ;
+    pm:hasSkill inst:skill_PL005_1, inst:skill_PL005_2, inst:skill_PL005_3, inst:skill_PL005_4 .
+
+inst:skill_PL005_1 a pm:Skill ; pm:skillName "UX 기획" ;           pm:proficiencyLevel "0.90"^^xsd:decimal .
+inst:skill_PL005_2 a pm:Skill ; pm:skillName "Figma" ;             pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_PL005_3 a pm:Skill ; pm:skillName "디자인 시스템" ;     pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_PL005_4 a pm:Skill ; pm:skillName "B2B SaaS 도메인" ;   pm:proficiencyLevel "0.78"^^xsd:decimal .
+
+inst:person_PL006 a pm:Person ;
+    pm:personId          "PL006" ;
+    pm:personName        "권태양" ;
+    pm:role              "기획자" ;
+    pm:grade             "대리" ;
+    pm:availabilityScore "0.88"^^xsd:decimal ;
+    pm:hasSkill inst:skill_PL006_1, inst:skill_PL006_2, inst:skill_PL006_3, inst:skill_PL006_4 .
+
+inst:skill_PL006_1 a pm:Skill ; pm:skillName "정책 정의" ;         pm:proficiencyLevel "0.82"^^xsd:decimal .
+inst:skill_PL006_2 a pm:Skill ; pm:skillName "보고서 작성" ;       pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_PL006_3 a pm:Skill ; pm:skillName "물류 도메인" ;       pm:proficiencyLevel "0.80"^^xsd:decimal .
+inst:skill_PL006_4 a pm:Skill ; pm:skillName "기능 정의서" ;       pm:proficiencyLevel "0.78"^^xsd:decimal .
+
+# ═══════════════════════════════════════════════════════════════
+# 3. 개발자 — 15명 (백엔드 / 프론트엔드 / 풀스택 / DBA / DevOps / AI / 모바일 / UI)
+# ═══════════════════════════════════════════════════════════════
+
+# ── 백엔드 개발자 (Java/Spring 계열) ──────────────────────────
+
+inst:person_DEV001 a pm:Person ;
+    pm:personId          "DEV001" ;
+    pm:personName        "김철수" ;
+    pm:role              "개발자" ;
+    pm:grade             "수석" ;
+    pm:availabilityScore "0.65"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV001_1, inst:skill_DEV001_2, inst:skill_DEV001_3, inst:skill_DEV001_4, inst:skill_DEV001_5, inst:skill_DEV001_6 .
+
+inst:skill_DEV001_1 a pm:Skill ; pm:skillName "Java" ;             pm:proficiencyLevel "0.95"^^xsd:decimal .
+inst:skill_DEV001_2 a pm:Skill ; pm:skillName "Spring Boot" ;      pm:proficiencyLevel "0.93"^^xsd:decimal .
+inst:skill_DEV001_3 a pm:Skill ; pm:skillName "JPA" ;              pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV001_4 a pm:Skill ; pm:skillName "Oracle" ;           pm:proficiencyLevel "0.90"^^xsd:decimal .
+inst:skill_DEV001_5 a pm:Skill ; pm:skillName "REST API" ;         pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_DEV001_6 a pm:Skill ; pm:skillName "공공 SI" ;          pm:proficiencyLevel "0.88"^^xsd:decimal .
+
+inst:person_DEV002 a pm:Person ;
+    pm:personId          "DEV002" ;
+    pm:personName        "최민준" ;
+    pm:role              "개발자" ;
+    pm:grade             "선임" ;
+    pm:availabilityScore "0.80"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV002_1, inst:skill_DEV002_2, inst:skill_DEV002_3, inst:skill_DEV002_4 .
+
+inst:skill_DEV002_1 a pm:Skill ; pm:skillName "Java" ;             pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV002_2 a pm:Skill ; pm:skillName "Spring Boot" ;      pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_DEV002_3 a pm:Skill ; pm:skillName "MySQL" ;            pm:proficiencyLevel "0.82"^^xsd:decimal .
+inst:skill_DEV002_4 a pm:Skill ; pm:skillName "REST API" ;         pm:proficiencyLevel "0.85"^^xsd:decimal .
+
+inst:person_DEV003 a pm:Person ;
+    pm:personId          "DEV003" ;
+    pm:personName        "안도현" ;
+    pm:role              "개발자" ;
+    pm:grade             "대리" ;
+    pm:availabilityScore "0.95"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV003_1, inst:skill_DEV003_2, inst:skill_DEV003_3, inst:skill_DEV003_4 .
+
+inst:skill_DEV003_1 a pm:Skill ; pm:skillName "Java" ;             pm:proficiencyLevel "0.75"^^xsd:decimal .
+inst:skill_DEV003_2 a pm:Skill ; pm:skillName "Spring Boot" ;      pm:proficiencyLevel "0.72"^^xsd:decimal .
+inst:skill_DEV003_3 a pm:Skill ; pm:skillName "Kafka" ;            pm:proficiencyLevel "0.80"^^xsd:decimal .
+inst:skill_DEV003_4 a pm:Skill ; pm:skillName "MSA" ;              pm:proficiencyLevel "0.78"^^xsd:decimal .
+
+# ── 백엔드 개발자 (Python 계열) ───────────────────────────────
+
+inst:person_DEV004 a pm:Person ;
+    pm:personId          "DEV004" ;
+    pm:personName        "정다은" ;
+    pm:role              "개발자" ;
+    pm:grade             "선임" ;
+    pm:availabilityScore "0.92"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV004_1, inst:skill_DEV004_2, inst:skill_DEV004_3, inst:skill_DEV004_4 .
+
+inst:skill_DEV004_1 a pm:Skill ; pm:skillName "Python" ;           pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_DEV004_2 a pm:Skill ; pm:skillName "FastAPI" ;          pm:proficiencyLevel "0.90"^^xsd:decimal .
+inst:skill_DEV004_3 a pm:Skill ; pm:skillName "PostgreSQL" ;       pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_DEV004_4 a pm:Skill ; pm:skillName "비동기 처리" ;      pm:proficiencyLevel "0.82"^^xsd:decimal .
+
+inst:person_DEV005 a pm:Person ;
+    pm:personId          "DEV005" ;
+    pm:personName        "임지원" ;
+    pm:role              "개발자" ;
+    pm:grade             "주임" ;
+    pm:availabilityScore "1.00"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV005_1, inst:skill_DEV005_2, inst:skill_DEV005_3 .
+
+inst:skill_DEV005_1 a pm:Skill ; pm:skillName "Python" ;           pm:proficiencyLevel "0.75"^^xsd:decimal .
+inst:skill_DEV005_2 a pm:Skill ; pm:skillName "Django" ;           pm:proficiencyLevel "0.78"^^xsd:decimal .
+inst:skill_DEV005_3 a pm:Skill ; pm:skillName "PostgreSQL" ;       pm:proficiencyLevel "0.72"^^xsd:decimal .
+
+# ── 백엔드 개발자 (Node.js 계열) ──────────────────────────────
+
+inst:person_DEV006 a pm:Person ;
+    pm:personId          "DEV006" ;
+    pm:personName        "백상훈" ;
+    pm:role              "개발자" ;
+    pm:grade             "대리" ;
+    pm:availabilityScore "0.75"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV006_1, inst:skill_DEV006_2, inst:skill_DEV006_3, inst:skill_DEV006_4 .
+
+inst:skill_DEV006_1 a pm:Skill ; pm:skillName "Node.js" ;          pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV006_2 a pm:Skill ; pm:skillName "TypeScript" ;       pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_DEV006_3 a pm:Skill ; pm:skillName "NestJS" ;           pm:proficiencyLevel "0.82"^^xsd:decimal .
+inst:skill_DEV006_4 a pm:Skill ; pm:skillName "MongoDB" ;          pm:proficiencyLevel "0.78"^^xsd:decimal .
+
+# ── 프론트엔드 개발자 ────────────────────────────────────────
+
+inst:person_DEV007 a pm:Person ;
+    pm:personId          "DEV007" ;
+    pm:personName        "최예린" ;
+    pm:role              "개발자" ;
+    pm:grade             "선임" ;
+    pm:availabilityScore "0.80"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV007_1, inst:skill_DEV007_2, inst:skill_DEV007_3, inst:skill_DEV007_4, inst:skill_DEV007_5 .
+
+inst:skill_DEV007_1 a pm:Skill ; pm:skillName "React" ;            pm:proficiencyLevel "0.95"^^xsd:decimal .
+inst:skill_DEV007_2 a pm:Skill ; pm:skillName "TypeScript" ;       pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_DEV007_3 a pm:Skill ; pm:skillName "Next.js" ;          pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV007_4 a pm:Skill ; pm:skillName "UI 구현" ;          pm:proficiencyLevel "0.90"^^xsd:decimal .
+inst:skill_DEV007_5 a pm:Skill ; pm:skillName "Tailwind CSS" ;     pm:proficiencyLevel "0.85"^^xsd:decimal .
+
+inst:person_DEV008 a pm:Person ;
+    pm:personId          "DEV008" ;
+    pm:personName        "한승우" ;
+    pm:role              "개발자" ;
+    pm:grade             "주임" ;
+    pm:availabilityScore "1.00"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV008_1, inst:skill_DEV008_2, inst:skill_DEV008_3 .
+
+inst:skill_DEV008_1 a pm:Skill ; pm:skillName "Vue.js" ;           pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_DEV008_2 a pm:Skill ; pm:skillName "JavaScript" ;       pm:proficiencyLevel "0.82"^^xsd:decimal .
+inst:skill_DEV008_3 a pm:Skill ; pm:skillName "UI 구현" ;          pm:proficiencyLevel "0.80"^^xsd:decimal .
+
+inst:person_DEV009 a pm:Person ;
+    pm:personId          "DEV009" ;
+    pm:personName        "송지안" ;
+    pm:role              "개발자" ;
+    pm:grade             "대리" ;
+    pm:availabilityScore "0.78"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV009_1, inst:skill_DEV009_2, inst:skill_DEV009_3, inst:skill_DEV009_4 .
+
+inst:skill_DEV009_1 a pm:Skill ; pm:skillName "React" ;            pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV009_2 a pm:Skill ; pm:skillName "TypeScript" ;       pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_DEV009_3 a pm:Skill ; pm:skillName "Chart.js" ;         pm:proficiencyLevel "0.82"^^xsd:decimal .
+inst:skill_DEV009_4 a pm:Skill ; pm:skillName "D3.js" ;            pm:proficiencyLevel "0.78"^^xsd:decimal .
+
+# ── 풀스택 개발자 ────────────────────────────────────────────
+
+inst:person_DEV010 a pm:Person ;
+    pm:personId          "DEV010" ;
+    pm:personName        "전우람" ;
+    pm:role              "개발자" ;
+    pm:grade             "책임" ;
+    pm:availabilityScore "0.55"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV010_1, inst:skill_DEV010_2, inst:skill_DEV010_3, inst:skill_DEV010_4, inst:skill_DEV010_5 .
+
+inst:skill_DEV010_1 a pm:Skill ; pm:skillName "React" ;            pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_DEV010_2 a pm:Skill ; pm:skillName "Node.js" ;          pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV010_3 a pm:Skill ; pm:skillName "TypeScript" ;       pm:proficiencyLevel "0.90"^^xsd:decimal .
+inst:skill_DEV010_4 a pm:Skill ; pm:skillName "PostgreSQL" ;       pm:proficiencyLevel "0.82"^^xsd:decimal .
+inst:skill_DEV010_5 a pm:Skill ; pm:skillName "AWS" ;              pm:proficiencyLevel "0.80"^^xsd:decimal .
+
+# ── DBA 성향 개발자 ──────────────────────────────────────────
+
+inst:person_DEV011 a pm:Person ;
+    pm:personId          "DEV011" ;
+    pm:personName        "오현석" ;
+    pm:role              "개발자" ;
+    pm:grade             "수석" ;
+    pm:availabilityScore "0.70"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV011_1, inst:skill_DEV011_2, inst:skill_DEV011_3, inst:skill_DEV011_4, inst:skill_DEV011_5 .
+
+inst:skill_DEV011_1 a pm:Skill ; pm:skillName "Oracle" ;           pm:proficiencyLevel "0.95"^^xsd:decimal .
+inst:skill_DEV011_2 a pm:Skill ; pm:skillName "쿼리 최적화" ;      pm:proficiencyLevel "0.93"^^xsd:decimal .
+inst:skill_DEV011_3 a pm:Skill ; pm:skillName "DB 설계" ;          pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_DEV011_4 a pm:Skill ; pm:skillName "PostgreSQL" ;       pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_DEV011_5 a pm:Skill ; pm:skillName "데이터 마이그레이션" ; pm:proficiencyLevel "0.88"^^xsd:decimal .
+
+# ── DevOps / 인프라 성향 개발자 ──────────────────────────────
+
+inst:person_DEV012 a pm:Person ;
+    pm:personId          "DEV012" ;
+    pm:personName        "유태완" ;
+    pm:role              "개발자" ;
+    pm:grade             "선임" ;
+    pm:availabilityScore "0.60"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV012_1, inst:skill_DEV012_2, inst:skill_DEV012_3, inst:skill_DEV012_4, inst:skill_DEV012_5 .
+
+inst:skill_DEV012_1 a pm:Skill ; pm:skillName "Kubernetes" ;       pm:proficiencyLevel "0.90"^^xsd:decimal .
+inst:skill_DEV012_2 a pm:Skill ; pm:skillName "Docker" ;           pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_DEV012_3 a pm:Skill ; pm:skillName "CI/CD" ;            pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV012_4 a pm:Skill ; pm:skillName "AWS" ;              pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV012_5 a pm:Skill ; pm:skillName "Terraform" ;        pm:proficiencyLevel "0.82"^^xsd:decimal .
+
+# ── AI / ML 성향 개발자 ──────────────────────────────────────
+
+inst:person_DEV013 a pm:Person ;
+    pm:personId          "DEV013" ;
+    pm:personName        "노유진" ;
+    pm:role              "개발자" ;
+    pm:grade             "책임" ;
+    pm:availabilityScore "0.85"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV013_1, inst:skill_DEV013_2, inst:skill_DEV013_3, inst:skill_DEV013_4, inst:skill_DEV013_5 .
+
+inst:skill_DEV013_1 a pm:Skill ; pm:skillName "Python" ;           pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_DEV013_2 a pm:Skill ; pm:skillName "PyTorch" ;          pm:proficiencyLevel "0.90"^^xsd:decimal .
+inst:skill_DEV013_3 a pm:Skill ; pm:skillName "NLP" ;              pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV013_4 a pm:Skill ; pm:skillName "OpenAI API" ;       pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_DEV013_5 a pm:Skill ; pm:skillName "LangChain" ;        pm:proficiencyLevel "0.82"^^xsd:decimal .
+
+inst:person_DEV014 a pm:Person ;
+    pm:personId          "DEV014" ;
+    pm:personName        "배수민" ;
+    pm:role              "개발자" ;
+    pm:grade             "대리" ;
+    pm:availabilityScore "0.90"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV014_1, inst:skill_DEV014_2, inst:skill_DEV014_3 .
+
+inst:skill_DEV014_1 a pm:Skill ; pm:skillName "TensorFlow" ;       pm:proficiencyLevel "0.82"^^xsd:decimal .
+inst:skill_DEV014_2 a pm:Skill ; pm:skillName "Python" ;           pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_DEV014_3 a pm:Skill ; pm:skillName "추천 시스템" ;      pm:proficiencyLevel "0.78"^^xsd:decimal .
+
+# ── 모바일 개발자 ────────────────────────────────────────────
+
+inst:person_DEV015 a pm:Person ;
+    pm:personId          "DEV015" ;
+    pm:personName        "강나현" ;
+    pm:role              "개발자" ;
+    pm:grade             "선임" ;
+    pm:availabilityScore "0.83"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV015_1, inst:skill_DEV015_2, inst:skill_DEV015_3, inst:skill_DEV015_4 .
+
+inst:skill_DEV015_1 a pm:Skill ; pm:skillName "Flutter" ;          pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_DEV015_2 a pm:Skill ; pm:skillName "Dart" ;             pm:proficiencyLevel "0.90"^^xsd:decimal .
+inst:skill_DEV015_3 a pm:Skill ; pm:skillName "React Native" ;     pm:proficiencyLevel "0.82"^^xsd:decimal .
+inst:skill_DEV015_4 a pm:Skill ; pm:skillName "iOS/Android 배포" ; pm:proficiencyLevel "0.85"^^xsd:decimal .
+
+# ── QA / 테스트 성향 개발자 ──────────────────────────────────
+
+inst:person_DEV016 a pm:Person ;
+    pm:personId          "DEV016" ;
+    pm:personName        "윤서연" ;
+    pm:role              "개발자" ;
+    pm:grade             "선임" ;
+    pm:availabilityScore "0.88"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV016_1, inst:skill_DEV016_2, inst:skill_DEV016_3, inst:skill_DEV016_4 .
+
+inst:skill_DEV016_1 a pm:Skill ; pm:skillName "테스트 케이스 설계" ; pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_DEV016_2 a pm:Skill ; pm:skillName "자동화 테스트" ;      pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV016_3 a pm:Skill ; pm:skillName "Selenium" ;           pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_DEV016_4 a pm:Skill ; pm:skillName "Cypress" ;            pm:proficiencyLevel "0.80"^^xsd:decimal .
+
+# ── UI 디자인 성향 개발자 ────────────────────────────────────
+
+inst:person_DEV017 a pm:Person ;
+    pm:personId          "DEV017" ;
+    pm:personName        "도예은" ;
+    pm:role              "개발자" ;
+    pm:grade             "대리" ;
+    pm:availabilityScore "0.72"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV017_1, inst:skill_DEV017_2, inst:skill_DEV017_3, inst:skill_DEV017_4 .
+
+inst:skill_DEV017_1 a pm:Skill ; pm:skillName "Figma" ;            pm:proficiencyLevel "0.95"^^xsd:decimal .
+inst:skill_DEV017_2 a pm:Skill ; pm:skillName "UI 디자인" ;        pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_DEV017_3 a pm:Skill ; pm:skillName "디자인 시스템" ;    pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV017_4 a pm:Skill ; pm:skillName "프로토타입" ;       pm:proficiencyLevel "0.85"^^xsd:decimal .
+
+# ── 신입 개발자 ──────────────────────────────────────────────
+
+inst:person_DEV018 a pm:Person ;
+    pm:personId          "DEV018" ;
+    pm:personName        "구민호" ;
+    pm:role              "개발자" ;
+    pm:grade             "사원" ;
+    pm:availabilityScore "1.00"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV018_1, inst:skill_DEV018_2 .
+
+inst:skill_DEV018_1 a pm:Skill ; pm:skillName "Java" ;             pm:proficiencyLevel "0.55"^^xsd:decimal .
+inst:skill_DEV018_2 a pm:Skill ; pm:skillName "Spring Boot" ;      pm:proficiencyLevel "0.50"^^xsd:decimal .
+
+inst:person_DEV019 a pm:Person ;
+    pm:personId          "DEV019" ;
+    pm:personName        "남궁현" ;
+    pm:role              "개발자" ;
+    pm:grade             "사원" ;
+    pm:availabilityScore "1.00"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV019_1, inst:skill_DEV019_2 .
+
+inst:skill_DEV019_1 a pm:Skill ; pm:skillName "JavaScript" ;       pm:proficiencyLevel "0.60"^^xsd:decimal .
+inst:skill_DEV019_2 a pm:Skill ; pm:skillName "React" ;            pm:proficiencyLevel "0.55"^^xsd:decimal .
+
+# ── 검색·데이터 플랫폼 성향 개발자 ───────────────────────────
+
+inst:person_DEV020 a pm:Person ;
+    pm:personId          "DEV020" ;
+    pm:personName        "성지호" ;
+    pm:role              "개발자" ;
+    pm:grade             "책임" ;
+    pm:availabilityScore "0.65"^^xsd:decimal ;
+    pm:hasSkill inst:skill_DEV020_1, inst:skill_DEV020_2, inst:skill_DEV020_3, inst:skill_DEV020_4 .
+
+inst:skill_DEV020_1 a pm:Skill ; pm:skillName "Elasticsearch" ;    pm:proficiencyLevel "0.92"^^xsd:decimal .
+inst:skill_DEV020_2 a pm:Skill ; pm:skillName "OpenSearch" ;       pm:proficiencyLevel "0.88"^^xsd:decimal .
+inst:skill_DEV020_3 a pm:Skill ; pm:skillName "Kafka" ;            pm:proficiencyLevel "0.85"^^xsd:decimal .
+inst:skill_DEV020_4 a pm:Skill ; pm:skillName "데이터 파이프라인" ; pm:proficiencyLevel "0.88"^^xsd:decimal .

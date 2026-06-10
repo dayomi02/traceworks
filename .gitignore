@@ -1,0 +1,118 @@
+# ─────────────────────────────────────────────────────────
+# 민감 정보 — 절대 커밋 금지
+# ─────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Secrets / 인증 파일
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+token.json
+google-sa.json
+service-account*.json
+.token
+backend/secrets/
+backend/.token
+
+# ─────────────────────────────────────────────────────────
+# Python
+# ─────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.Python
+
+# 가상환경
+.venv/
+venv/
+env/
+ENV/
+
+# 캐시 / 테스트 산출물
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+
+# ─────────────────────────────────────────────────────────
+# Node / Frontend
+# ─────────────────────────────────────────────────────────
+node_modules/
+.next/
+.nuxt/
+dist/
+build/
+.cache/
+*.tsbuildinfo
+.pnpm-store/
+
+# ─────────────────────────────────────────────────────────
+# 로그 / 임시 파일
+# ─────────────────────────────────────────────────────────
+*.log
+logs/
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# ─────────────────────────────────────────────────────────
+# IDE / OS
+# ─────────────────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*.iml
+.cursor/
+.zed/
+.claude/
+.aider*
+Thumbs.db
+desktop.ini
+
+# ─────────────────────────────────────────────────────────
+# Docker
+# ─────────────────────────────────────────────────────────
+docker-compose.override.yml
+.docker/
+
+# ─────────────────────────────────────────────────────────
+# 데이터 / 임시 산출물
+# ─────────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+data/
+uploads/
+backups/
+
+# 사용자 임시 메모/스케치
+**/scratch/
+**/_drafts/
+
+# ─────────────────────────────────────────────────────────
+# 프로젝트별 — 분석 산출물 (필요 시 주석 해제)
+# ─────────────────────────────────────────────────────────
+# rfp_sample*.txt
+# *.pdf
